@@ -62,7 +62,7 @@ const ReviewData = () => {
           item
           key={sentence.id}
           xs={12}
-          onClick={() => handleSendToggle(sentence.id!, !sentence.willSubmit)}
+          onClick={() => handleSendToggle(sentence.id, !sentence.willSubmit)}
         >
           <Box py={2}>
             <Paper elevation={1}>
@@ -80,7 +80,7 @@ const ReviewData = () => {
                         )
                       }
                       onClick={() =>
-                        handleSendToggle(sentence.id!, !sentence.willSubmit)
+                        handleSendToggle(sentence.id, !sentence.willSubmit)
                       }
                     >
                       Send

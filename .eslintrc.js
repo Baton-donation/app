@@ -18,6 +18,8 @@ module.exports = {
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended",
   ],
-  rules: {},
-  ignorePatterns: ["node_modules", "app", "dist"],
+  rules: {
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+  },
+  ignorePatterns: ["node_modules", "app", "dist", "nextron.config.js"],
 };

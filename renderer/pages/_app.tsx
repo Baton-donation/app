@@ -9,13 +9,6 @@ import Link from "../components/link";
 import configureStore from "../store/configure-store";
 import { loadFromDatabase } from "../store/sentences/actions";
 
-const LINKS = [
-  {
-    name: "Dashboard",
-    href: "/dashboard",
-  },
-];
-
 const store = configureStore();
 
 interface IOptionalBreadcrumb {
@@ -31,6 +24,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     dispatch(loadFromDatabase());
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const breadcrumbLink = (Component as any).breadcrumb as IOptionalBreadcrumb;
 
   return (
