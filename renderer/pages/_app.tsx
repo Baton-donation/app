@@ -1,15 +1,10 @@
 import React, { useEffect } from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
-import { Provider, useDispatch } from "react-redux";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import Toolbar from "@material-ui/core/Toolbar";
 import Link from "../components/link";
-import configureStore from "../store/configure-store";
-import { loadFromDatabase } from "../store/sentences/actions";
-
-const store = configureStore();
 
 interface IOptionalBreadcrumb {
   name: string;
@@ -17,13 +12,6 @@ interface IOptionalBreadcrumb {
 }
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    // Load data into store
-    dispatch(loadFromDatabase());
-  }, []);
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const breadcrumbLink = (Component as any).breadcrumb as IOptionalBreadcrumb;
 
@@ -64,10 +52,4 @@ function MyApp({ Component, pageProps }: AppProps) {
   );
 }
 
-export default function WrappedApp({ Component, pageProps, router }: AppProps) {
-  return (
-    <Provider store={store}>
-      <MyApp Component={Component} pageProps={pageProps} router={router} />
-    </Provider>
-  );
-}
+export default MyApp;
