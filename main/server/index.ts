@@ -89,6 +89,17 @@ export const registerIPCHandlers = async (): Promise<void> => {
     return sentences;
   });
 
+  ipcMain.handle("get-submitted-sentences", async () => {
+    return sentencesRepo.find({
+      where: {
+        submitted: true,
+      },
+      order: {
+        createdAt: "DESC",
+      },
+    });
+  });
+
   ipcMain.handle(
     "submit-sentences-by-uuids",
     async (_, { uuids }: { uuids: string[] }) => {
@@ -130,4 +141,11 @@ export const registerIPCHandlers = async (): Promise<void> => {
 
     return { totalSentences, submittedSentences, unviewedSentences };
   });
+
+  ipcMain.handle(
+    "delete-submitted-sentence",
+    async (_, { uuid }: { uuid: string }) => {
+      await sentencesRepo.update(uuid, { submitted: false });
+    }
+  );
 };

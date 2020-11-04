@@ -36,6 +36,14 @@ export const markSentencesAsViewedByUUIDs = async (uuids: string[]) => {
   return ipcRenderer.invoke("mark-sentences-as-viewed-by-uuids", { uuids });
 };
 
+export const getSubmittedSentences = async (): Promise<ISentence[]> => {
+  return ipcRenderer.invoke("get-submitted-sentences");
+};
+
+export const deleteSubmittedSentence = async (uuid: string) => {
+  return ipcRenderer.invoke("delete-submitted-sentence", { uuid });
+};
+
 export const getStats = async (): Promise<IStats> => {
   return ipcRenderer.invoke("get-stats");
 };

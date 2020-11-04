@@ -1,45 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
-
-const SENTENCES = [
-  {
-    content: "Hi",
-    id: 1,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 2,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 3,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 4,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 5,
-    willSubmit: false,
-  },
-];
+import {
+  getSubmittedSentences,
+  deleteSubmittedSentence,
+  ISentence,
+} from "../../lib/api";
 
 const EditData = () => {
-  const [sentences, setSentences] = useState(SENTENCES);
+  const [sentences, setSentences] = useState<ISentence[]>([]);
 
-  const handleDelete = (id: number) => {
-    setSentences((s) => s.filter((sentence) => sentence.id !== id));
+  const refreshSentences = useCallback(async () => {
+    const s = await getSubmittedSentences();
+
+    setSentences(s);
+  }, []);
+
+  const handleDelete = async (uuid: string) => {
+    await deleteSubmittedSentence(uuid);
+
+    await refreshSentences();
   };
+
+  useEffect(() => {
+    refreshSentences();
+  }, []);
 
   return (
     <Grid container spacing={5}>
@@ -48,7 +37,7 @@ const EditData = () => {
       </Grid>
 
       {sentences.map((sentence) => (
-        <Grid item key={sentence.id} xs={12}>
+        <Grid item key={sentence.uuid} xs={12}>
           <Box py={2}>
             <Paper elevation={1}>
               <Box px={2}>
@@ -61,7 +50,7 @@ const EditData = () => {
                     <IconButton
                       aria-label="delete"
                       color="secondary"
-                      onClick={() => handleDelete(sentence.id)}
+                      onClick={() => handleDelete(sentence.uuid)}
                     >
                       <DeleteIcon />
                     </IconButton>
