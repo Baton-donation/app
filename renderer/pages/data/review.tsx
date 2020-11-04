@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/router";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
@@ -8,49 +9,55 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-
-const SENTENCES = [
-  {
-    content: "Hi",
-    id: 1,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 2,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 3,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 4,
-    willSubmit: false,
-  },
-  {
-    content: "Hi",
-    id: 5,
-    willSubmit: false,
-  },
-];
+import {
+  getSentenceBatch,
+  submitSentencesByUUIDs,
+  markSentencesAsViewedByUUIDs,
+  ISentence,
+} from "../../lib/api";
 
 const ReviewData = () => {
-  const [sentences, setSentences] = useState(SENTENCES);
+  const router = useRouter();
+  const [sentences, setSentences] = useState<ISentence[]>([]);
+  const [idsToSubmit, setIdsToSubmit] = useState<string[]>([]);
 
-  const areAnySelected = sentences.find((s) => s.willSubmit) !== undefined;
+  const refreshSentences = useCallback(async () => {
+    const s = await getSentenceBatch();
 
-  const handleSendToggle = (id: number, shouldSubmit: boolean) => {
-    setSentences((s) =>
-      s.map((sentence) =>
-        sentence.id === id
-          ? { ...sentence, willSubmit: shouldSubmit }
-          : sentence
-      )
-    );
+    if (s.length === 0) {
+      router.push("/dashboard");
+      return;
+    }
+
+    setSentences(s);
+    setIdsToSubmit([]);
+  }, []);
+
+  const handleSendToggle = (uuid: string) => {
+    setIdsToSubmit((currentIds) => {
+      if (currentIds.includes(uuid)) {
+        return currentIds.filter((i) => i !== uuid);
+      }
+
+      return [...currentIds, uuid];
+    });
   };
+
+  const handleSubmit = async () => {
+    if (idsToSubmit.length > 0) {
+      await Promise.all([
+        submitSentencesByUUIDs(idsToSubmit),
+        markSentencesAsViewedByUUIDs(sentences.map((s) => s.uuid)),
+      ]);
+    }
+
+    await refreshSentences();
+  };
+
+  // On first load
+  useEffect(() => {
+    refreshSentences();
+  }, []);
 
   return (
     <Grid container spacing={5}>
@@ -58,30 +65,27 @@ const ReviewData = () => {
         <Typography variant="subtitle2">10-15 of 55</Typography>
       </Grid>
       {sentences.map((sentence) => (
-        <Grid
-          item
-          key={sentence.id}
-          xs={12}
-          onClick={() => handleSendToggle(sentence.id, !sentence.willSubmit)}
-        >
+        <Grid item key={sentence.uuid} xs={12}>
           <Box py={2}>
             <Paper elevation={1}>
               <Box px={2}>
                 <Grid container alignItems="center" spacing={3}>
                   <Grid item>
                     <Button
-                      variant={sentence.willSubmit ? "contained" : "outlined"}
+                      variant={
+                        idsToSubmit.includes(sentence.uuid)
+                          ? "contained"
+                          : "outlined"
+                      }
                       color="primary"
                       startIcon={
-                        sentence.willSubmit ? (
+                        idsToSubmit.includes(sentence.uuid) ? (
                           <CheckCircle />
                         ) : (
                           <RadioButtonUncheckedIcon />
                         )
                       }
-                      onClick={() =>
-                        handleSendToggle(sentence.id, !sentence.willSubmit)
-                      }
+                      onClick={() => handleSendToggle(sentence.uuid)}
                     >
                       Send
                     </Button>
@@ -99,11 +103,14 @@ const ReviewData = () => {
 
       <Grid item xs={12}>
         <Button
-          startIcon={areAnySelected ? <CloudUploadIcon /> : <SkipNextIcon />}
+          startIcon={
+            idsToSubmit.length === 0 ? <SkipNextIcon /> : <CloudUploadIcon />
+          }
           color="secondary"
           variant="contained"
+          onClick={handleSubmit}
         >
-          {areAnySelected ? "Submit" : "Skip"} and move to next
+          {idsToSubmit.length === 0 ? "Skip" : "Submit"} and move to next
         </Button>
       </Grid>
     </Grid>

@@ -17,6 +17,9 @@ const getInstalledApps = async () => {
 export const registerIPCHandlers = async (): Promise<void> => {
   const connection = await getDBConnection();
 
+  const sentencesRepo = connection.manager.getRepository(Sentence);
+  const settingsRepo = connection.manager.getRepository(Settings);
+
   ipcMain.handle("is-first-open", async () => {
     const settings = await connection.manager.findOne(Settings);
 
@@ -26,8 +29,6 @@ export const registerIPCHandlers = async (): Promise<void> => {
   ipcMain.handle(
     "create-settings",
     async (_, { includeId }: { includeId: boolean }) => {
-      const settingsRepo = connection.manager.getRepository(Settings);
-
       const settings = settingsRepo.create({
         id: 0,
         includeUUID: includeId,
@@ -58,7 +59,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
           .values(
             sentences.map((s) => ({
               uuid: uuidv4(),
-              createdAt: new Date().getTime(),
+              createdAt: new Date(),
               submitted: false,
               viewed: false,
               content: s,
@@ -67,5 +68,62 @@ export const registerIPCHandlers = async (): Promise<void> => {
           .execute();
       })
     );
+  });
+
+  ipcMain.handle("get-sentence-batch", async () => {
+    const sentences = await sentencesRepo.find({
+      where: {
+        submitted: false,
+        viewed: false,
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take: 5,
+    });
+
+    return sentences;
+  });
+
+  ipcMain.handle(
+    "submit-sentences-by-uuids",
+    async (_, { uuids }: { uuids: string[] }) => {
+      await connection
+        .createQueryBuilder()
+        .update(Sentence)
+        .where("sentence.uuid IN (:...uuids)", { uuids })
+        .set({ submitted: true })
+        .execute();
+    }
+  );
+
+  ipcMain.handle(
+    "mark-sentences-as-viewed-by-uuids",
+    async (_, { uuids }: { uuids: string[] }) => {
+      await connection
+        .createQueryBuilder()
+        .update(Sentence)
+        .where("sentence.uuid IN (:...uuids)", { uuids })
+        .set({ viewed: true })
+        .execute();
+    }
+  );
+
+  ipcMain.handle("get-stats", async () => {
+    const [
+      totalSentences,
+      submittedSentences,
+      unviewedSentences,
+    ] = await Promise.all([
+      sentencesRepo.count(),
+      sentencesRepo.count({
+        where: { submitted: true },
+      }),
+      sentencesRepo.count({
+        where: { viewed: false },
+      }),
+    ]);
+
+    return { totalSentences, submittedSentences, unviewedSentences };
   });
 };
