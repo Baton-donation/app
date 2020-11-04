@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -6,11 +6,29 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { useRouter } from "next/router";
+import { getInstalledApps, importFromInstalledApps } from "../../lib/api";
 
 const SecondStep = () => {
+  const [appNames, setAppNames] = useState<string[]>([]);
   const router = useRouter();
 
   const goToDashboard = () => router.push("/dashboard");
+
+  useEffect(() => {
+    getInstalledApps().then((apps) => {
+      if (apps.length === 0) {
+        goToDashboard();
+      } else {
+        setAppNames(apps);
+      }
+    });
+  }, []);
+
+  const handleImport = async () => {
+    await importFromInstalledApps();
+
+    goToDashboard();
+  };
 
   return (
     <Grid container spacing={1}>
@@ -25,7 +43,9 @@ const SecondStep = () => {
 
         <List>
           <ListItem>
-            <ListItemText primary="Dasher" />
+            {appNames.map((appName) => (
+              <ListItemText primary={appName} key={appName} />
+            ))}
           </ListItem>
         </List>
 
@@ -38,7 +58,7 @@ const SecondStep = () => {
       <Grid item xs={12} />
 
       <Grid item>
-        <Button onClick={goToDashboard} variant="contained" color="primary">
+        <Button onClick={handleImport} variant="contained" color="primary">
           Yes
         </Button>
       </Grid>

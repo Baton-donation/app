@@ -5,10 +5,17 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { FormControl, FormControlLabel, RadioGroup } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
+import { createSettings } from "../../lib/api";
 
 const FirstStep = () => {
   const router = useRouter();
   const [value, setValue] = useState("no");
+
+  const handleNextPage = async () => {
+    await createSettings({ includeId: value === "yes" });
+
+    router.push("/setup/2");
+  };
 
   return (
     <Grid container spacing={1}>
@@ -49,11 +56,7 @@ const FirstStep = () => {
         </FormControl>
       </Grid>
 
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => router.push("/setup/2")}
-      >
+      <Button variant="contained" color="primary" onClick={handleNextPage}>
         Next
       </Button>
     </Grid>

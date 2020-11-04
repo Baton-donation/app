@@ -3,6 +3,7 @@ import { Connection, createConnection } from "typeorm";
 import envPaths from "env-paths";
 import path from "path";
 import { Settings } from "./entity/Settings";
+import { Sentence } from "./entity/Sentence";
 
 let connection: Connection;
 
@@ -13,14 +14,18 @@ export const getDBConnection = async (): Promise<Connection> => {
 
   const paths = envPaths("baton");
 
+  const dbPath = path.join(paths.data, "db.sqlite");
+
+  console.log(`Storing database at: ${dbPath}`);
+
   connection = await createConnection({
     type: "sqlite",
-    database: path.join(paths.data, "db.sqlite"),
-    entities: [Settings],
+    database: dbPath,
+    entities: [Settings, Sentence],
     synchronize: true,
   });
 
   return connection;
 };
 
-export { Settings } from "./entity/Settings";
+export { Settings, Sentence };
