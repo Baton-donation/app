@@ -11,3 +11,9 @@ export interface IStats {
   submittedSentences: number;
   unviewedSentences: number;
 }
+
+export interface ISettings {
+  id: number;
+  includeUUID: boolean;
+  uuid: string;
+}

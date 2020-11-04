@@ -1,5 +1,5 @@
 import electron from "electron";
-import { ISentence, IStats } from "./types";
+import { ISentence, IStats, ISettings } from "./types";
 
 // Prevent SSR webpacking
 const ipcRenderer = electron.ipcRenderer || false;
@@ -10,6 +10,10 @@ export const isFirstOpen = async (): Promise<boolean> => {
 
 export const createSettings = async ({ includeId }: { includeId: boolean }) => {
   return ipcRenderer.invoke("create-settings", { includeId });
+};
+
+export const getSettings = async (): Promise<ISettings> => {
+  return ipcRenderer.invoke("get-settings");
 };
 
 export const getInstalledApps = async (): Promise<string[]> => {
@@ -36,4 +40,4 @@ export const getStats = async (): Promise<IStats> => {
   return ipcRenderer.invoke("get-stats");
 };
 
-export type { ISentence, IStats };
+export type { ISentence, IStats, ISettings };

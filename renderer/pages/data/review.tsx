@@ -13,6 +13,7 @@ import {
   getSentenceBatch,
   submitSentencesByUUIDs,
   markSentencesAsViewedByUUIDs,
+  getStats,
   ISentence,
 } from "../../lib/api";
 
@@ -20,14 +21,17 @@ const ReviewData = () => {
   const router = useRouter();
   const [sentences, setSentences] = useState<ISentence[]>([]);
   const [idsToSubmit, setIdsToSubmit] = useState<string[]>([]);
+  const [sentencesLeft, setSentencesLeft] = useState(0);
 
   const refreshSentences = useCallback(async () => {
-    const s = await getSentenceBatch();
+    const [s, stats] = await Promise.all([getSentenceBatch(), getStats()]);
 
     if (s.length === 0) {
       router.push("/dashboard");
       return;
     }
+
+    setSentencesLeft(stats.unviewedSentences);
 
     setSentences(s);
     setIdsToSubmit([]);
@@ -62,7 +66,7 @@ const ReviewData = () => {
   return (
     <Grid container spacing={5}>
       <Grid item style={{ marginLeft: "auto" }}>
-        <Typography variant="subtitle2">10-15 of 55</Typography>
+        <Typography variant="subtitle2">{sentencesLeft} left</Typography>
       </Grid>
       {sentences.map((sentence) => (
         <Grid item key={sentence.uuid} xs={12}>

@@ -39,6 +39,10 @@ export const registerIPCHandlers = async (): Promise<void> => {
     }
   );
 
+  ipcMain.handle("get-settings", async () => {
+    return connection.manager.findOne(Settings);
+  });
+
   ipcMain.handle("get-installed-apps", async () => {
     return (await getInstalledApps()).map((app) => app.getName());
   });

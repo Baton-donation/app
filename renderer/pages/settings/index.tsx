@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Link from "../../components/link";
 import { default as TextLink } from "@material-ui/core/Link";
+import { getSettings, ISettings } from "../../lib/api";
 
 const SettingsHome = () => {
+  const [settings, setSettings] = useState<ISettings | null>(null);
+
+  useEffect(() => {
+    getSettings().then((s) => setSettings(s));
+  }, []);
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
@@ -13,8 +20,9 @@ const SettingsHome = () => {
 
       <Grid item xs={6}>
         <Typography>
-          An anonymous ID is currently included when submitting data. Please
-          email{" "}
+          An anonymous ID is currently{" "}
+          {settings?.includeUUID ? <b>included</b> : <b>not included</b>} when
+          submitting data. Please email{" "}
           <TextLink href="mailto:baton@dasher.com">baton@dasher.com</TextLink>{" "}
           with any questions.
         </Typography>
