@@ -4,29 +4,47 @@ import { AAppDataGetters } from "./types";
 
 class PlainText extends AAppDataGetters {
   private name: string;
-  private location: string;
+  private cachedLocation?: string;
+  private locations: string[];
   private processFileFunc: (buff: Buffer) => string;
 
   constructor({
     name,
-    location,
+    locations,
     processFile = (t) => t.toString(),
   }: {
     name: string;
-    location: string;
+    locations: string[];
     processFile?: (buff: Buffer) => string;
   }) {
     super();
 
     this.name = name;
-    this.location = location;
+    this.locations = locations;
     this.processFileFunc = processFile;
+  }
+
+  private async getLocation(): Promise<string> {
+    if (this.cachedLocation) {
+      return this.cachedLocation
+    }
+
+    for await (let location of this.locations) {
+      try {
+        await fs.promises.access(location)
+
+        this.cachedLocation = location;
+
+        return location;
+      } catch {}
+    }
+
+    throw new Error("No location was valid.");
   }
 
   async doesExist() {
     try {
-      await fs.promises.access(this.location);
-
+      await this.getLocation()
       return true;
     } catch {
       return false;
@@ -34,19 +52,11 @@ class PlainText extends AAppDataGetters {
   }
 
   async getHash() {
-    if (!(await this.doesExist())) {
-      throw new Error("File doesn't exist");
-    }
-
-    return hasha.fromFile(this.location);
+    return hasha.fromFile(await this.getLocation());
   }
 
   async getText() {
-    if (!(await this.doesExist())) {
-      throw new Error("File doesn't exist");
-    }
-
-    const contents = await fs.promises.readFile(this.location);
+    const contents = await fs.promises.readFile(await this.getLocation());
 
     return this.processFileFunc(contents);
   }
