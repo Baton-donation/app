@@ -1,11 +1,13 @@
 import bufferReplace from "buffer-replace";
-import path from 'path'
+import path from "path";
 import PlainText from "./plain-text";
 
-const DASHER_PATHS = ['./training.txt']
+const DASHER_PATHS = ["./training.txt"];
 
 if (process.env.APPDATA) {
-  DASHER_PATHS.push(path.join(process.env.APPDATA, 'dasher.rc/training_english_GB.txt'))
+  DASHER_PATHS.push(
+    path.join(process.env.APPDATA, "dasher.rc/training_english_GB.txt")
+  );
 }
 
 const dasher = new PlainText({

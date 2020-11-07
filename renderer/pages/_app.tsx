@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import CssBaseline from "@material-ui/core/CssBaseline";

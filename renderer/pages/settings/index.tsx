@@ -22,7 +22,9 @@ const SettingsHome = () => {
         <Typography>
           An anonymous ID is currently{" "}
           {settings?.includeUUID ? <b>included</b> : <b>not included</b>} when
-          submitting data. Please email{" "}
+          submitting data.{" "}
+          {settings?.includeUUID ? `Your ID is ${settings?.uuid}.` : ""} Please
+          email{" "}
           <TextLink href="mailto:baton@dasher.com">baton@dasher.com</TextLink>{" "}
           with any questions.
         </Typography>

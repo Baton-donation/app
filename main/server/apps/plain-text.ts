@@ -26,12 +26,12 @@ class PlainText extends AAppDataGetters {
 
   private async getLocation(): Promise<string> {
     if (this.cachedLocation) {
-      return this.cachedLocation
+      return this.cachedLocation;
     }
 
-    for await (let location of this.locations) {
+    for await (const location of this.locations) {
       try {
-        await fs.promises.access(location)
+        await fs.promises.access(location);
 
         this.cachedLocation = location;
 
@@ -44,7 +44,7 @@ class PlainText extends AAppDataGetters {
 
   async doesExist() {
     try {
-      await this.getLocation()
+      await this.getLocation();
       return true;
     } catch {
       return false;
