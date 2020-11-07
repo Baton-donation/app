@@ -48,12 +48,15 @@ const ReviewData = () => {
   };
 
   const handleSubmit = async () => {
+    const promises = [
+      markSentencesAsViewedByUUIDs(sentences.map((s) => s.uuid)),
+    ];
+
     if (idsToSubmit.length > 0) {
-      await Promise.all([
-        submitSentencesByUUIDs(idsToSubmit),
-        markSentencesAsViewedByUUIDs(sentences.map((s) => s.uuid)),
-      ]);
+      promises.push(submitSentencesByUUIDs(idsToSubmit));
     }
+
+    await Promise.all(promises);
 
     await refreshSentences();
   };

@@ -2,7 +2,7 @@ import bufferReplace from "buffer-replace";
 import path from "path";
 import PlainText from "./plain-text";
 
-const DASHER_PATHS = ["./training.txt"];
+const DASHER_PATHS = [path.join(__dirname, "../test-data/apps/dasher.txt")];
 
 if (process.env.APPDATA) {
   DASHER_PATHS.push(

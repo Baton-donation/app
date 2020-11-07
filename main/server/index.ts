@@ -1,5 +1,6 @@
 import { ipcMain } from "electron";
 import { v4 as uuidv4 } from "uuid";
+import chunk from "chunk";
 import { getDBConnection, Settings, Sentence } from "./models";
 import apps from "./apps";
 import { getSentences } from "./lib/nlp";
@@ -54,22 +55,26 @@ export const registerIPCHandlers = async (): Promise<void> => {
       installedApps.map(async (app) => {
         const text = await app.getText();
 
-        const sentences = getSentences(text);
+        const sentencesInChunks = chunk(getSentences(text), 100);
 
-        await connection
-          .createQueryBuilder()
-          .insert()
-          .into(Sentence)
-          .values(
-            sentences.map((s) => ({
-              uuid: uuidv4(),
-              createdAt: new Date(),
-              submitted: false,
-              viewed: false,
-              content: s,
-            }))
+        await Promise.all(
+          sentencesInChunks.map((chunk) =>
+            connection
+              .createQueryBuilder()
+              .insert()
+              .into(Sentence)
+              .values(
+                chunk.map((s) => ({
+                  uuid: uuidv4(),
+                  createdAt: new Date(),
+                  submitted: false,
+                  viewed: false,
+                  content: s,
+                }))
+              )
+              .execute()
           )
-          .execute();
+        );
       })
     );
   });

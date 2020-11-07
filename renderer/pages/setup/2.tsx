@@ -4,12 +4,14 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import { useRouter } from "next/router";
 import { getInstalledApps, importFromInstalledApps } from "../../lib/api";
 
 const SecondStep = () => {
   const [appNames, setAppNames] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const goToDashboard = () => router.push("/dashboard");
@@ -25,9 +27,13 @@ const SecondStep = () => {
   }, []);
 
   const handleImport = async () => {
+    setLoading(true);
+
     await importFromInstalledApps();
 
     goToDashboard();
+
+    setLoading(false);
   };
 
   return (
@@ -58,15 +64,26 @@ const SecondStep = () => {
       <Grid item xs={12} />
 
       <Grid item>
-        <Button onClick={handleImport} variant="contained" color="primary">
+        <Button
+          onClick={handleImport}
+          variant="contained"
+          color="primary"
+          disabled={loading}
+        >
           Yes
         </Button>
       </Grid>
       <Grid item>
-        <Button onClick={goToDashboard}>
+        <Button onClick={goToDashboard} disabled={loading}>
           Skip, I&apos;ll set this up later
         </Button>
       </Grid>
+
+      {loading && (
+        <Grid item>
+          <CircularProgress />
+        </Grid>
+      )}
     </Grid>
   );
 };
