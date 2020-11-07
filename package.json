@@ -42,6 +42,7 @@
     "@typescript-eslint/parser": "^4.6.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.1",
+    "byte-parser": "^1.0.0",
     "electron": "^10.1.5",
     "electron-builder": "^22.9.1",
     "eslint": "^7.12.1",
@@ -50,13 +51,16 @@
     "eslint-plugin-react": "^7.21.5",
     "husky": "^4.3.0",
     "lint-staged": "^10.5.1",
+    "make-dir": "^3.1.0",
     "next": "10.0.0",
     "nextron": "^5.15.6",
     "prettier": "^2.1.2",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
+    "truncating-stream": "^1.0.2",
     "typescript": "^4.0.5",
-    "webpack": "^5.3.2"
+    "webpack": "^5.3.2",
+    "yargs": "^16.1.0"
   },
   "husky": {
     "hooks": {

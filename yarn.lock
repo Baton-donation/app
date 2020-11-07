@@ -2381,6 +2381,11 @@ builtin-status-codes@^3.0.0:
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
 
+byte-parser@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/byte-parser/-/byte-parser-1.0.0.tgz#93ba24737860410827f55eeb81e5b80660aacfd8"
+  integrity sha512-zvGPc9QyjgzpRN7iOU/FzHcTnIMPAZykM9HyWlIOu8hPu1q+TxjsKCi1xi8tbZQGyvIUUB/mRIlZDst3gyyznQ==
+
 cacache@15.0.5:
   version "15.0.5"
   resolved "https://registry.yarnpkg.com/cacache/-/cacache-15.0.5.tgz#69162833da29170d6732334643c60e005f5f17d0"
@@ -8158,6 +8163,11 @@ truncate-utf8-bytes@^1.0.0:
   dependencies:
     utf8-byte-length "^1.0.1"
 
+truncating-stream@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/truncating-stream/-/truncating-stream-1.0.2.tgz#39ae704df956b39f9c5416bb9773b93fc0f48115"
+  integrity sha1-Oa5wTflWs5+cVBa7l3O5P8D0gRU=
+
 ts-pnp@^1.1.6:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ts-pnp/-/ts-pnp-1.2.0.tgz#a500ad084b0798f1c3071af391e65912c86bca92"
@@ -8811,7 +8821,7 @@ yargs@^15.0.0:
     y18n "^4.0.0"
     yargs-parser "^18.1.2"
 
-yargs@^16.0.3:
+yargs@^16.0.3, yargs@^16.1.0:
   version "16.1.0"
   resolved "https://registry.yarnpkg.com/yargs/-/yargs-16.1.0.tgz#fc333fe4791660eace5a894b39d42f851cd48f2a"
   integrity sha512-upWFJOmDdHN0syLuESuvXDmrRcWd1QafJolHskzaw79uZa7/x53gxQKiR07W59GWY1tFhhU/Th9DrtSfpS782g==
