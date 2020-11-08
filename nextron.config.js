@@ -5,6 +5,9 @@ const cwd = process.cwd();
 module.exports = {
   webpack: (defaultConfig) =>
     Object.assign(defaultConfig, {
+      optimization: {
+        minimize: false
+      },
       module: {
         rules: [
           {
