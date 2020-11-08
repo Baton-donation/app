@@ -57,24 +57,23 @@ export const registerIPCHandlers = async (): Promise<void> => {
 
         const sentencesInChunks = chunk(getSentences(text), 100);
 
-        await Promise.all(
-          sentencesInChunks.map((chunk) =>
-            connection
-              .createQueryBuilder()
-              .insert()
-              .into(Sentence)
-              .values(
-                chunk.map((s) => ({
-                  uuid: uuidv4(),
-                  createdAt: new Date(),
-                  submitted: false,
-                  viewed: false,
-                  content: s,
-                }))
-              )
-              .execute()
-          )
-        );
+        // Can't use Promise.all, since insert order (therefore createdAt date) would be non-deterministic
+        for (const chunk of sentencesInChunks) {
+          await connection
+            .createQueryBuilder()
+            .insert()
+            .into(Sentence)
+            .values(
+              chunk.map((s) => ({
+                uuid: uuidv4(),
+                createdAt: new Date(),
+                submitted: false,
+                viewed: false,
+                content: s,
+              }))
+            )
+            .execute();
+        }
       })
     );
   });

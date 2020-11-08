@@ -90,7 +90,7 @@ const EditData = () => {
       <Virtuoso
         style={{
           width: "100%",
-          height: "90vh",
+          height: "85vh",
           marginLeft: "2rem",
           marginRight: "2rem",
         }}
