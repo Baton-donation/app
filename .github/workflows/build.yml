@@ -4,7 +4,7 @@ on: push
 
 jobs:
   release:
-    runs-on: windows-latest
+    runs-on: macos-latest
 
     env:
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
@@ -42,4 +42,4 @@ jobs:
             ${{ runner.os }}-electron-builder-cache-
 
       - name: Build app
-        run: yarn build
+        run: yarn build -- --win
