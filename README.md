@@ -1,25 +1,17 @@
-<p align="center"><img src="https://i.imgur.com/flcMvDC.png"></p>
+Baton is a simple app that allows AAC software users to upload data for research purposes.
+
+Currently, Baton supports extracting data from Dasher. We plan to add additional supported apps in the future.
 
 ## Usage
 
-### Install Dependencies
+Download and install [a recent release](https://github.com/kdv123/AACDonation/releases). There's a short setup wizard upon the first open.
 
-```zsh
-$ cd my-app
+## Development
 
-# using yarn or npm
-$ yarn (or `npm install`)
+```bash
+# install dependencies
+yarn install
 
-# using pnpm
-$ pnpm install --shamefully-hoist
-```
-
-### Use it
-
-```zsh
-# development mode
-$ yarn dev (or `npm run dev` or `pnpm run dev`)
-
-# production build
-$ yarn build (or `npm run build` or `pnpm run build`)
+# start in development mode
+yarn dev
 ```
