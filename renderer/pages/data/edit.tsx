@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  useLayoutEffect,
+} from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -7,6 +13,7 @@ import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { Virtuoso } from "react-virtuoso";
+import { useWindowSize } from "react-use";
 import {
   getSubmittedSentences,
   deleteSubmittedSentence,
@@ -23,7 +30,7 @@ const SentenceRow = ({
   onDelete: (uuid: string) => void;
 }) => (
   <Box>
-    <div style={{ height: "1rem" }} />
+    <div style={{ height: "1.5rem" }} />
     <Paper elevation={1}>
       <Box px={2}>
         <Grid container alignItems="center" spacing={3}>
@@ -43,15 +50,19 @@ const SentenceRow = ({
         </Grid>
       </Box>
     </Paper>
-    <div style={{ height: "1rem" }} />
+    <div style={{ height: "1.5rem" }} />
   </Box>
 );
 
 const loadedOffsets: number[] = [];
 
 const EditData = () => {
+  const headerRef = useRef<HTMLDivElement>(null);
   const [sentences, setSentences] = useState<ISentence[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [scrollableHeight, setScrollableHeight] = useState(0);
+
+  const { height: windowHeight } = useWindowSize();
 
   const loadMore = useCallback(async () => {
     const offset = sentences.length;
@@ -81,16 +92,24 @@ const EditData = () => {
     loadMore();
   }, []);
 
+  useLayoutEffect(() => {
+    if (headerRef.current) {
+      const headerRect = headerRef.current.getBoundingClientRect();
+
+      setScrollableHeight(windowHeight - headerRect.bottom);
+    }
+  }, [headerRef, windowHeight]);
+
   return (
     <Grid container spacing={5}>
-      <Grid item xs={12}>
+      <Grid item xs={12} ref={headerRef}>
         <Typography variant="h2">Edit uploaded data</Typography>
       </Grid>
 
       <Virtuoso
         style={{
           width: "100%",
-          height: "85vh",
+          height: `${scrollableHeight}px`,
           marginLeft: "2rem",
           marginRight: "2rem",
         }}

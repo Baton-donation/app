@@ -81,7 +81,6 @@ export default (
       nodeIntegration: true,
       ...options.webPreferences,
     },
-    titleBarStyle: "hiddenInset",
   };
   win = new BrowserWindow(browserOptions);
 
