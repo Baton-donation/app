@@ -94,16 +94,21 @@ export const registerIPCHandlers = async (): Promise<void> => {
     return sentences;
   });
 
-  ipcMain.handle("get-submitted-sentences", async () => {
-    return sentencesRepo.find({
-      where: {
-        submitted: true,
-      },
-      order: {
-        createdAt: "DESC",
-      },
-    });
-  });
+  ipcMain.handle(
+    "get-submitted-sentences",
+    async (_, { offset, limit }: { offset: number; limit: number }) => {
+      return sentencesRepo.find({
+        where: {
+          submitted: true,
+        },
+        order: {
+          createdAt: "DESC",
+        },
+        take: limit,
+        skip: offset,
+      });
+    }
+  );
 
   ipcMain.handle(
     "submit-sentences-by-uuids",
