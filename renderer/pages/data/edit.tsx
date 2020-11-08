@@ -42,11 +42,11 @@ const EditData = () => {
             <Paper elevation={1}>
               <Box px={2}>
                 <Grid container alignItems="center" spacing={3}>
-                  <Grid item>
+                  <Grid item xs={10}>
                     <Typography variant="body1">{sentence.content}</Typography>
                   </Grid>
 
-                  <Grid item style={{ marginLeft: "auto" }}>
+                  <Grid item xs="auto" style={{ marginLeft: "auto" }}>
                     <IconButton
                       aria-label="delete"
                       color="secondary"

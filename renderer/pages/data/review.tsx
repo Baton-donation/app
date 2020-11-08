@@ -77,7 +77,7 @@ const ReviewData = () => {
             <Paper elevation={1}>
               <Box px={2}>
                 <Grid container alignItems="center" spacing={3}>
-                  <Grid item>
+                  <Grid item xs="auto">
                     <Button
                       variant={
                         idsToSubmit.includes(sentence.uuid)
@@ -98,7 +98,7 @@ const ReviewData = () => {
                     </Button>
                   </Grid>
 
-                  <Grid item>
+                  <Grid item xs={10}>
                     <Typography variant="body1">{sentence.content}</Typography>
                   </Grid>
                 </Grid>
