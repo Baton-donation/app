@@ -2,30 +2,25 @@ import "reflect-metadata";
 import { Connection, createConnection } from "typeorm";
 import envPaths from "env-paths";
 import path from "path";
+import del from "del";
 import { Settings } from "./entity/Settings";
 import { Sentence } from "./entity/Sentence";
 
-let connection: Connection;
+const DB_PATH = path.join(envPaths("baton").data, "db.sqlite");
 
 export const getDBConnection = async (): Promise<Connection> => {
-  if (connection) {
-    return connection;
-  }
+  console.log(`Storing database at: ${DB_PATH}`);
 
-  const paths = envPaths("baton");
-
-  const dbPath = path.join(paths.data, "db.sqlite");
-
-  console.log(`Storing database at: ${dbPath}`);
-
-  connection = await createConnection({
+  return await createConnection({
     type: "sqlite",
-    database: dbPath,
+    database: DB_PATH,
     entities: [Settings, Sentence],
     synchronize: true,
   });
+};
 
-  return connection;
+export const deleteDB = async () => {
+  await del(DB_PATH, { force: true });
 };
 
 export { Settings, Sentence };

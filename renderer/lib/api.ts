@@ -48,4 +48,8 @@ export const getStats = async (): Promise<IStats> => {
   return ipcRenderer.invoke("get-stats");
 };
 
+export const deleteAllLocalData = async () => {
+  return ipcRenderer.invoke("delete-all-local-data");
+};
+
 export type { ISentence, IStats, ISettings };

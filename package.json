@@ -17,6 +17,7 @@
     "buffer-replace": "^1.0.0",
     "chunk": "^0.0.3",
     "compromise": "^13.7.0",
+    "del": "^6.0.0",
     "dexie": "^3.0.2",
     "electron-serve": "^1.0.0",
     "electron-store": "^6.0.1",

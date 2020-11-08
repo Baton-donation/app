@@ -1,7 +1,7 @@
 import { ipcMain } from "electron";
 import { v4 as uuidv4 } from "uuid";
 import chunk from "chunk";
-import { getDBConnection, Settings, Sentence } from "./models";
+import { getDBConnection, deleteDB, Settings, Sentence } from "./models";
 import apps from "./apps";
 import { getSentences } from "./lib/nlp";
 
@@ -16,7 +16,7 @@ const getInstalledApps = async () => {
 };
 
 export const registerIPCHandlers = async (): Promise<void> => {
-  const connection = await getDBConnection();
+  let connection = await getDBConnection();
 
   const sentencesRepo = connection.manager.getRepository(Sentence);
   const settingsRepo = connection.manager.getRepository(Settings);
@@ -153,4 +153,13 @@ export const registerIPCHandlers = async (): Promise<void> => {
       await sentencesRepo.update(uuid, { submitted: false });
     }
   );
+
+  ipcMain.handle("delete-all-local-data", async () => {
+    await connection.close();
+
+    await deleteDB();
+
+    // Refresh connection
+    connection = await getDBConnection();
+  });
 };
