@@ -16,7 +16,7 @@ const getInstalledApps = async () => {
 };
 
 export const registerIPCHandlers = async (): Promise<void> => {
-  let connection = await getDBConnection();
+  const connection = await getDBConnection();
 
   const sentencesRepo = connection.manager.getRepository(Sentence);
   const settingsRepo = connection.manager.getRepository(Settings);
@@ -160,6 +160,6 @@ export const registerIPCHandlers = async (): Promise<void> => {
     await deleteDB();
 
     // Refresh connection
-    connection = await getDBConnection();
+    await connection.connect();
   });
 };
