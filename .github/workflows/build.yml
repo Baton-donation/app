@@ -4,7 +4,7 @@ on: push
 
 jobs:
   release:
-    runs-on: macos-latest
+    runs-on: windows-latest
 
     env:
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
