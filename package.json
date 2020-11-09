@@ -2,7 +2,7 @@
   "private": true,
   "name": "baton",
   "description": "AAC data-gathering app",
-  "version": "1.1.1",
+  "version": "0.1.0",
   "author": "Max Isom <hi@maxisom.me>",
   "main": "app/background.js",
   "scripts": {
