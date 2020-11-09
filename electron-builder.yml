@@ -10,3 +10,7 @@ files:
       - app
 publish:
   - github
+
+win:
+  target:
+    - portable
