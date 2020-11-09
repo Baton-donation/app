@@ -5,7 +5,7 @@ import path from "path";
 import del from "del";
 import { Settings } from "./entity/Settings";
 import { Sentence } from "./entity/Sentence";
-import {Initial1604872621134} from './migration/initial'
+import { Initial1604872621134 } from "./migration/initial";
 
 const DB_PATH = path.join(envPaths("baton").data, "db.sqlite");
 
@@ -17,7 +17,7 @@ export const getDBConnection = async (): Promise<Connection> => {
     database: DB_PATH,
     entities: [Settings, Sentence],
     migrations: [Initial1604872621134],
-    migrationsRun: true
+    migrationsRun: true,
   });
 };
 
