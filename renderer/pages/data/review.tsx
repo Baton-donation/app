@@ -66,10 +66,34 @@ const ReviewData = () => {
     refreshSentences();
   }, []);
 
+  const areAllSelected = idsToSubmit.length === 5;
+
+  const handleSelectAll = () => {
+    if (areAllSelected) {
+      setIdsToSubmit([]);
+    } else {
+      setIdsToSubmit(sentences.map((s) => s.uuid));
+    }
+  };
+
   return (
     <Grid container spacing={5}>
-      <Grid item style={{ marginLeft: "auto" }}>
-        <Typography variant="subtitle2">{sentencesLeft} left</Typography>
+      <Grid item container>
+        <Grid item>
+          <Button
+            color="primary"
+            startIcon={
+              areAllSelected ? <CheckCircle /> : <RadioButtonUncheckedIcon />
+            }
+            onClick={handleSelectAll}
+          >
+            Select All
+          </Button>
+        </Grid>
+
+        <Grid item style={{ marginLeft: "auto" }}>
+          <Typography variant="subtitle2">{sentencesLeft} left</Typography>
+        </Grid>
       </Grid>
       {sentences.map((sentence) => (
         <Grid item key={sentence.uuid} xs={12}>
