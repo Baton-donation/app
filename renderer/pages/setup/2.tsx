@@ -1,39 +1,20 @@
-import React, { useEffect, useState } from "react";
-import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import Typography from "@material-ui/core/Typography";
-import CircularProgress from "@material-ui/core/CircularProgress";
-import Grid from "@material-ui/core/Grid";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { getInstalledApps, importFromInstalledApps } from "../../lib/api";
+import Radio from "@material-ui/core/Radio";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import { FormControl, FormControlLabel, RadioGroup } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import { createSettings } from "../../lib/api";
 
 const SecondStep = () => {
-  const [appNames, setAppNames] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [value, setValue] = useState("no");
 
-  const goToDashboard = () => router.push("/dashboard");
+  const handleNextPage = async () => {
+    await createSettings({ includeId: value === "yes" });
 
-  useEffect(() => {
-    getInstalledApps().then((apps) => {
-      if (apps.length === 0) {
-        goToDashboard();
-      } else {
-        setAppNames(apps);
-      }
-    });
-  }, []);
-
-  const handleImport = async () => {
-    setLoading(true);
-
-    await importFromInstalledApps();
-
-    goToDashboard();
-
-    setLoading(false);
+    router.push("/setup/3");
   };
 
   return (
@@ -45,45 +26,39 @@ const SecondStep = () => {
       </Grid>
 
       <Grid item xs={8}>
-        <Typography>It looks like you&apos;ve used:</Typography>
-
-        <List>
-          <ListItem>
-            {appNames.map((appName) => (
-              <ListItemText primary={appName} key={appName} />
-            ))}
-          </ListItem>
-        </List>
-
         <Typography>
-          in the past. Would you like to automatically import past and future
-          data for manual review from these apps?
+          When submitting data, would you like to include an anonymous ID to
+          better assist researchers? This ID will be attached with each uploaded
+          sentence in an effort to better model the data. If you don’t include
+          this ID, your sentences will be added to a global pool with no
+          information that can be used to correlate them.
         </Typography>
       </Grid>
 
-      <Grid item xs={12} />
-
-      <Grid item>
-        <Button
-          onClick={handleImport}
-          variant="contained"
-          color="primary"
-          disabled={loading}
-        >
-          Yes
-        </Button>
+      <Grid item xs={12}>
+        <FormControl component="fieldset">
+          <RadioGroup
+            aria-label="anon-id"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          >
+            <FormControlLabel
+              value="yes"
+              control={<Radio />}
+              label="Yes, include an anonymous ID"
+            />
+            <FormControlLabel
+              value="no"
+              control={<Radio />}
+              label="No, don't include an anonymous ID"
+            />
+          </RadioGroup>
+        </FormControl>
       </Grid>
-      <Grid item>
-        <Button onClick={goToDashboard} disabled={loading}>
-          Skip, I&apos;ll set this up later
-        </Button>
-      </Grid>
 
-      {loading && (
-        <Grid item>
-          <CircularProgress />
-        </Grid>
-      )}
+      <Button variant="contained" color="primary" onClick={handleNextPage}>
+        Next
+      </Button>
     </Grid>
   );
 };
