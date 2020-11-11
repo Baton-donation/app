@@ -14,11 +14,13 @@ import {
   submitSentencesByUUIDs,
   markSentencesAsViewedByUUIDs,
   getStats,
+  getSettings,
   ISentence,
 } from "../../lib/api";
 
 const ReviewData = () => {
   const router = useRouter();
+  const [selectAllByDefault, setSelectAllByDefault] = useState(false);
   const [sentences, setSentences] = useState<ISentence[]>([]);
   const [idsToSubmit, setIdsToSubmit] = useState<string[]>([]);
   const [sentencesLeft, setSentencesLeft] = useState(0);
@@ -64,7 +66,16 @@ const ReviewData = () => {
   // On first load
   useEffect(() => {
     refreshSentences();
+    getSettings().then((settings) =>
+      setSelectAllByDefault(settings.defaultToAllSelected)
+    );
   }, []);
+
+  useEffect(() => {
+    if (selectAllByDefault) {
+      setIdsToSubmit(sentences.map((s) => s.uuid));
+    }
+  }, [sentences, selectAllByDefault]);
 
   const areAllSelected = idsToSubmit.length === 5;
 

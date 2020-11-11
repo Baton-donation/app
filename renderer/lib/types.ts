@@ -16,4 +16,5 @@ export interface ISettings {
   id: number;
   includeUUID: boolean;
   uuid: string;
+  defaultToAllSelected: boolean;
 }

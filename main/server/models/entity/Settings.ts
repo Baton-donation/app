@@ -10,4 +10,7 @@ export class Settings {
 
   @Column()
   uuid!: string;
+
+  @Column()
+  defaultToAllSelected!: boolean;
 }

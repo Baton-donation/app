@@ -166,4 +166,14 @@ export const registerIPCHandlers = async (): Promise<void> => {
     // Refresh connection
     await connection.connect();
   });
+
+  ipcMain.handle("put-settings", async (_, newSettings: Partial<Sentence>) => {
+    const settings = await settingsRepo.findOne();
+
+    if (!settings) {
+      throw new Error("No existing settings found");
+    }
+
+    await settingsRepo.update(settings.id, newSettings);
+  });
 };

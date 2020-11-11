@@ -7,10 +7,18 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Grid from "@material-ui/core/Grid";
+import CheckCircle from "@material-ui/icons/CheckCircle";
+import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
+import Delete from "@material-ui/icons/Delete";
 import { useRouter } from "next/router";
 import Link from "../../components/link";
 import { default as TextLink } from "@material-ui/core/Link";
-import { getSettings, deleteAllLocalData, ISettings } from "../../lib/api";
+import {
+  getSettings,
+  deleteAllLocalData,
+  ISettings,
+  putSettings,
+} from "../../lib/api";
 
 const SettingsHome = () => {
   const router = useRouter();
@@ -20,8 +28,10 @@ const SettingsHome = () => {
   );
   const [loading, setLoading] = useState(false);
 
+  const refreshSettings = () => getSettings().then((s) => setSettings(s));
+
   useEffect(() => {
-    getSettings().then((s) => setSettings(s));
+    refreshSettings();
   }, []);
 
   const onHide = useCallback(() => {
@@ -39,6 +49,15 @@ const SettingsHome = () => {
 
     // Go to initial setup
     router.push("/");
+  };
+
+  const handleToggleAllSelected = async () => {
+    if (!settings) {
+      return;
+    }
+
+    await putSettings({ defaultToAllSelected: !settings.defaultToAllSelected });
+    await refreshSettings();
   };
 
   return (
@@ -61,18 +80,33 @@ const SettingsHome = () => {
 
       <Grid item xs={12} />
 
-      <Grid item container alignItems="center">
-        <Grid item xs={1}>
-          <Link href="/settings/sources">Edit sources</Link>
-        </Grid>
-        <Grid item xs={11}>
-          <Button
-            color="secondary"
-            onClick={() => setShowDeletionConfirmation(true)}
-          >
-            Delete all locally stored data
-          </Button>
-        </Grid>
+      <Grid item xs={12}>
+        <Link href="/settings/sources">Edit sources</Link>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Button
+          onClick={handleToggleAllSelected}
+          startIcon={
+            settings?.defaultToAllSelected ? (
+              <CheckCircle />
+            ) : (
+              <RadioButtonUncheckedIcon />
+            )
+          }
+        >
+          Default to selecting all sentences
+        </Button>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Button
+          color="secondary"
+          onClick={() => setShowDeletionConfirmation(true)}
+          startIcon={<Delete />}
+        >
+          Delete all locally stored data
+        </Button>
       </Grid>
 
       <Dialog

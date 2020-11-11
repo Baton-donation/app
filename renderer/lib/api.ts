@@ -58,4 +58,8 @@ export const deleteAllLocalData = async () => {
   return ipcRenderer.invoke("delete-all-local-data");
 };
 
+export const putSettings = async (newSettings: Partial<ISettings>) => {
+  return ipcRenderer.invoke("put-settings", newSettings);
+};
+
 export type { ISentence, IStats, ISettings };

@@ -6,6 +6,7 @@ import del from "del";
 import { Settings } from "./entity/Settings";
 import { Sentence } from "./entity/Sentence";
 import { Initial1604872621134 } from "./migration/initial";
+import { AddSettingsSelectColumn1605132328043 } from "./migration/add-settings-select-column";
 
 const DB_PATH = path.join(envPaths("baton").data, "db.sqlite");
 
@@ -16,7 +17,7 @@ export const getDBConnection = async (): Promise<Connection> => {
     type: "sqlite",
     database: DB_PATH,
     entities: [Settings, Sentence],
-    migrations: [Initial1604872621134],
+    migrations: [Initial1604872621134, AddSettingsSelectColumn1605132328043],
     migrationsRun: true,
   });
 };
