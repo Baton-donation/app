@@ -62,4 +62,8 @@ export const putSettings = async (newSettings: Partial<ISettings>) => {
   return ipcRenderer.invoke("put-settings", newSettings);
 };
 
+export const refreshData = async () => {
+  return ipcRenderer.invoke("refresh-data");
+};
+
 export type { ISentence, IStats, ISettings };

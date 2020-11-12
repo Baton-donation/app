@@ -95,7 +95,7 @@ const ReviewData = () => {
     );
   }, [sentences]);
 
-  const areAllSelected = idsToSubmit.length === batchSize;
+  const areAllSelected = idsToSubmit.length === sentences.length;
 
   const handleSendToggle = (uuid: string) => {
     setIdsToSubmit((currentIds) => {

@@ -1,6 +1,7 @@
 import bufferReplace from "buffer-replace";
 import path from "path";
 import PlainText from "./plain-text";
+import { AAppDataGetters, AppName } from "./types";
 
 const DASHER_PATHS = [path.join(__dirname, "../test-data/apps/dasher.txt")];
 
@@ -23,5 +24,20 @@ const dasher = new PlainText({
     return cleanedBuffer.toString();
   },
 });
+
+export const appFactory = ({
+  name,
+  path,
+}: {
+  name: AppName;
+  path: string;
+}): AAppDataGetters => {
+  switch (name) {
+    case "Dasher":
+      return dasher;
+    case "PlainText":
+      return new PlainText({ locations: [path] });
+  }
+};
 
 export default { dasher };

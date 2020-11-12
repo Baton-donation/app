@@ -1,9 +1,9 @@
 import fs from "fs";
 import hasha from "hasha";
-import { AAppDataGetters } from "./types";
+import { AAppDataGetters, AppName } from "./types";
 
 class PlainText extends AAppDataGetters {
-  private name: string;
+  private name: AppName = "PlainText";
   private cachedLocation?: string;
   private locations: string[];
   private processFileFunc: (buff: Buffer) => string;
@@ -13,13 +13,16 @@ class PlainText extends AAppDataGetters {
     locations,
     processFile = (t) => t.toString(),
   }: {
-    name: string;
+    name?: AppName;
     locations: string[];
     processFile?: (buff: Buffer) => string;
   }) {
     super();
 
-    this.name = name;
+    if (name) {
+      this.name = name;
+    }
+
     this.locations = locations;
     this.processFileFunc = processFile;
   }
@@ -63,6 +66,10 @@ class PlainText extends AAppDataGetters {
 
   getName() {
     return this.name;
+  }
+
+  async getPath() {
+    return this.getLocation();
   }
 }
 

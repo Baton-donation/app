@@ -1,9 +1,13 @@
 import { ipcMain } from "electron";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, v5 as uuidv5 } from "uuid";
 import chunk from "chunk";
-import { getDBConnection, deleteDB, Settings, Sentence } from "./models";
-import apps from "./apps";
+import { getDBConnection, deleteDB, Settings, Sentence, App } from "./models";
+import apps, { appFactory } from "./apps";
 import { getSentences } from "./lib/nlp";
+import { AppName } from "./apps/types";
+import { Connection } from "typeorm";
+
+const UUID_NAMESPACE = "2b677848-e909-434b-9db8-f5a0b8113618";
 
 const getInstalledApps = async () => {
   const installedApps = [];
@@ -15,11 +19,94 @@ const getInstalledApps = async () => {
   return installedApps;
 };
 
+const refreshDataFromAllApps = async (
+  connection: Connection,
+  { force = false, firstTime = false } = {}
+) => {
+  const appRepo = connection.manager.getRepository(App);
+  const sentencesRepo = connection.manager.getRepository(Sentence);
+
+  const installedApps = await appRepo.find();
+
+  await Promise.all(
+    installedApps.map(async (appModel) => {
+      const thisApp = appFactory({
+        name: appModel.name as AppName,
+        path: appModel.path,
+      });
+
+      const currentHash = await thisApp.getHash();
+
+      if (currentHash !== appModel.hash || force) {
+        // Update
+        const text = await thisApp.getText();
+
+        if (firstTime) {
+          const sentencesInChunks = chunk(getSentences(text), 50);
+
+          // Can't use Promise.all, since insert order (therefore createdAt date) would be non-deterministic
+          for (const chunk of sentencesInChunks) {
+            await connection
+              .createQueryBuilder()
+              .insert()
+              .into(Sentence)
+              .values(
+                chunk.map((s) => ({
+                  uuid: uuidv5(s, UUID_NAMESPACE),
+                  createdAt: new Date(),
+                  submitted: false,
+                  viewed: false,
+                  content: s,
+                }))
+              )
+              .orIgnore()
+              .execute();
+          }
+        } else {
+          // It's assumed that there's not going to be much new data when updating
+          const sentences = getSentences(text).reverse();
+
+          let seenDuplicateSentences = 0;
+
+          for (const sentence of sentences) {
+            if (seenDuplicateSentences > 5) {
+              // Probably past the new data
+              break;
+            }
+
+            const uuid = uuidv5(sentence, UUID_NAMESPACE);
+
+            const existingSentence = await sentencesRepo.findOne({
+              where: { uuid },
+            });
+
+            if (existingSentence) {
+              seenDuplicateSentences++;
+              continue;
+            } else {
+              const s = sentencesRepo.create({
+                uuid,
+                createdAt: new Date(),
+                submitted: false,
+                viewed: false,
+                content: sentence,
+              });
+
+              await sentencesRepo.save(s);
+            }
+          }
+        }
+      }
+    })
+  );
+};
+
 export const registerIPCHandlers = async (): Promise<void> => {
   const connection = await getDBConnection();
 
   const sentencesRepo = connection.manager.getRepository(Sentence);
   const settingsRepo = connection.manager.getRepository(Settings);
+  const appRepo = connection.manager.getRepository(App);
 
   ipcMain.handle("is-first-open", async () => {
     const settings = await connection.manager.findOne(Settings);
@@ -54,29 +141,18 @@ export const registerIPCHandlers = async (): Promise<void> => {
 
     await Promise.all(
       installedApps.map(async (app) => {
-        const text = await app.getText();
+        const newApp = appRepo.create({
+          name: app.getName(),
+          path: await app.getPath(),
+          hash: await app.getHash(),
+          updatedAt: new Date(),
+        });
 
-        const sentencesInChunks = chunk(getSentences(text), 100);
-
-        // Can't use Promise.all, since insert order (therefore createdAt date) would be non-deterministic
-        for (const chunk of sentencesInChunks) {
-          await connection
-            .createQueryBuilder()
-            .insert()
-            .into(Sentence)
-            .values(
-              chunk.map((s) => ({
-                uuid: uuidv4(),
-                createdAt: new Date(),
-                submitted: false,
-                viewed: false,
-                content: s,
-              }))
-            )
-            .execute();
-        }
+        await appRepo.save(newApp);
       })
     );
+
+    await refreshDataFromAllApps(connection, { force: true, firstTime: true });
   });
 
   ipcMain.handle("get-sentence-batch", async (_, size: number) => {
@@ -176,5 +252,9 @@ export const registerIPCHandlers = async (): Promise<void> => {
     }
 
     await settingsRepo.update(settings.id, newSettings);
+  });
+
+  ipcMain.handle("refresh-data", async () => {
+    await refreshDataFromAllApps(connection);
   });
 };

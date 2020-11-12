@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require("fs");
 const path = require("path");
+const { Readable } = require("stream");
 const yargs = require("yargs/yargs");
 const { hideBin } = require("yargs/helpers");
 const { default: byteParser } = require("byte-parser");
@@ -33,6 +34,17 @@ yargs(hideBin(process.argv))
         .pipe(trunc)
         .pipe(dasherTransform)
         .pipe(fs.createWriteStream(DASHER_OUTPUT_PATH));
+    }
+  )
+  .command(
+    "update",
+    "add a single sentence to the Dasher dataset",
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    () => {},
+    async () => {
+      Readable.from([`This is a new string at ${new Date()}.`])
+        .pipe(dasherTransform)
+        .pipe(fs.createWriteStream(DASHER_OUTPUT_PATH, { flags: "a" }));
     }
   )
   .command(

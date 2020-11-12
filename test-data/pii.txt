@@ -3,4 +3,4 @@ I live at 10 South St, Fake City Alabama.
 My email is example@example.com.
 Call her at 1-800-123-4567.
 This sentence does not contain personal information.
-This is a really really really really really really really really really really really really really really really really really really really really really long sentence with an email: example@example.com
+This is a really really really really really really really really really really really really really really really really really really really really really long sentence with an email: example@example.com.
