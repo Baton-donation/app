@@ -34,6 +34,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
         id: 0,
         includeUUID: includeId,
         uuid: uuidv4(),
+        sentencesPerPage: 5,
       });
 
       await settingsRepo.save(settings);

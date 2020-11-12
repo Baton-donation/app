@@ -7,10 +7,12 @@ import CheckCircle from "@material-ui/icons/CheckCircle";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
+import WarningIcon from "@material-ui/icons/Warning";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from "@material-ui/core/Tooltip";
 import {
   getSentenceBatch,
   submitSentencesByUUIDs,
@@ -20,6 +22,7 @@ import {
   ISentence,
   putSettings,
 } from "../../lib/api";
+import { doesContainPersonalInformation } from "../../lib/pii";
 
 const PER_PAGE_OPTIONS = [5, 7, 10, 15, 20];
 
@@ -30,7 +33,11 @@ const ReviewData = () => {
   const [sentences, setSentences] = useState<ISentence[]>([]);
   const [idsToSubmit, setIdsToSubmit] = useState<string[]>([]);
   const [sentencesLeft, setSentencesLeft] = useState(0);
+  const [dangerousSentenceIds, setDangerousSentenceIds] = useState<string[]>(
+    []
+  );
 
+  // Updates batch, stats, and resets checkmarks
   const refreshSentences = useCallback(async () => {
     const [s, stats] = await Promise.all([
       getSentenceBatch(batchSize),
@@ -48,10 +55,47 @@ const ReviewData = () => {
     setIdsToSubmit([]);
   }, [batchSize]);
 
+  // Update batch when size changes
   useEffect(() => {
     // Also runs upon mount
     refreshSentences();
   }, [batchSize]);
+
+  // Runs upon mount
+  // Gets settings
+  useEffect(() => {
+    getSettings().then((settings) => {
+      setSelectAllByDefault(settings.defaultToAllSelected);
+      setBatchSize(settings.sentencesPerPage);
+    });
+  }, []);
+
+  // Selects all upon batch change
+  // if selectAllByDefault is true
+  useEffect(() => {
+    if (selectAllByDefault) {
+      setIdsToSubmit(
+        sentences
+          .map((s) => s.uuid)
+          .filter((uuid) => !dangerousSentenceIds.includes(uuid))
+      );
+    }
+  }, [sentences, selectAllByDefault, dangerousSentenceIds]);
+
+  // Checks for personal information
+  useEffect(() => {
+    setDangerousSentenceIds(
+      sentences.reduce<string[]>((accum, sentence) => {
+        if (doesContainPersonalInformation(sentence.content)) {
+          accum.push(sentence.uuid);
+        }
+
+        return accum;
+      }, [])
+    );
+  }, [sentences]);
+
+  const areAllSelected = idsToSubmit.length === batchSize;
 
   const handleSendToggle = (uuid: string) => {
     setIdsToSubmit((currentIds) => {
@@ -76,22 +120,6 @@ const ReviewData = () => {
 
     await refreshSentences();
   };
-
-  // On first load
-  useEffect(() => {
-    getSettings().then((settings) => {
-      setSelectAllByDefault(settings.defaultToAllSelected);
-      setBatchSize(settings.sentencesPerPage);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (selectAllByDefault) {
-      setIdsToSubmit(sentences.map((s) => s.uuid));
-    }
-  }, [sentences, selectAllByDefault]);
-
-  const areAllSelected = idsToSubmit.length === batchSize;
 
   const handleSelectAll = () => {
     if (areAllSelected) {
@@ -156,6 +184,14 @@ const ReviewData = () => {
                   <Grid item xs={10}>
                     <Typography variant="body1">{sentence.content}</Typography>
                   </Grid>
+
+                  {dangerousSentenceIds.includes(sentence.uuid) && (
+                    <Grid item xs="auto">
+                      <Tooltip title="This may contain personal information">
+                        <WarningIcon color="error" />
+                      </Tooltip>
+                    </Grid>
+                  )}
                 </Grid>
               </Box>
             </Paper>

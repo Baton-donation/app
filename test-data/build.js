@@ -10,6 +10,7 @@ const makeDir = require("make-dir");
 const dasherTransform = require("./lib/dasher");
 
 const INPUT_DATA_PATH = path.join(__dirname, "./raw.txt");
+const PII_INPUT_DATA_PATH = path.join(__dirname, "./pii.txt");
 const DASHER_OUTPUT_PATH = path.join(__dirname, "apps/dasher.txt");
 
 yargs(hideBin(process.argv))
@@ -30,6 +31,17 @@ yargs(hideBin(process.argv))
 
       fs.createReadStream(INPUT_DATA_PATH)
         .pipe(trunc)
+        .pipe(dasherTransform)
+        .pipe(fs.createWriteStream(DASHER_OUTPUT_PATH));
+    }
+  )
+  .command(
+    "pii",
+    "generate a static dataset containing personal information for Dasher",
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    () => {},
+    async () => {
+      fs.createReadStream(PII_INPUT_DATA_PATH)
         .pipe(dasherTransform)
         .pipe(fs.createWriteStream(DASHER_OUTPUT_PATH));
     }
