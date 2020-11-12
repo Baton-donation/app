@@ -78,7 +78,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
     );
   });
 
-  ipcMain.handle("get-sentence-batch", async () => {
+  ipcMain.handle("get-sentence-batch", async (_, size: number) => {
     const sentences = await sentencesRepo.find({
       where: {
         submitted: false,
@@ -87,7 +87,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
       order: {
         createdAt: "DESC",
       },
-      take: 5,
+      take: size,
     });
 
     return sentences;

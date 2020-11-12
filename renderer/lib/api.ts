@@ -24,8 +24,8 @@ export const importFromInstalledApps = async () => {
   return ipcRenderer.invoke("import-from-installed-apps");
 };
 
-export const getSentenceBatch = async (): Promise<ISentence[]> => {
-  return ipcRenderer.invoke("get-sentence-batch");
+export const getSentenceBatch = async (size: number): Promise<ISentence[]> => {
+  return ipcRenderer.invoke("get-sentence-batch", size);
 };
 
 export const submitSentencesByUUIDs = async (uuids: string[]) => {

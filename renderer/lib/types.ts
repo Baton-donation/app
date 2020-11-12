@@ -17,4 +17,5 @@ export interface ISettings {
   includeUUID: boolean;
   uuid: string;
   defaultToAllSelected: boolean;
+  sentencesPerPage: number;
 }

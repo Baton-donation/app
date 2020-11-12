@@ -13,4 +13,7 @@ export class Settings {
 
   @Column()
   defaultToAllSelected!: boolean;
+
+  @Column()
+  sentencesPerPage!: number;
 }

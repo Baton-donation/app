@@ -9,6 +9,8 @@ import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 import {
   getSentenceBatch,
   submitSentencesByUUIDs,
@@ -16,17 +18,24 @@ import {
   getStats,
   getSettings,
   ISentence,
+  putSettings,
 } from "../../lib/api";
+
+const PER_PAGE_OPTIONS = [5, 7, 10, 15, 20];
 
 const ReviewData = () => {
   const router = useRouter();
   const [selectAllByDefault, setSelectAllByDefault] = useState(false);
+  const [batchSize, setBatchSize] = useState(PER_PAGE_OPTIONS[0]);
   const [sentences, setSentences] = useState<ISentence[]>([]);
   const [idsToSubmit, setIdsToSubmit] = useState<string[]>([]);
   const [sentencesLeft, setSentencesLeft] = useState(0);
 
   const refreshSentences = useCallback(async () => {
-    const [s, stats] = await Promise.all([getSentenceBatch(), getStats()]);
+    const [s, stats] = await Promise.all([
+      getSentenceBatch(batchSize),
+      getStats(),
+    ]);
 
     if (s.length === 0) {
       router.push("/dashboard");
@@ -37,7 +46,12 @@ const ReviewData = () => {
 
     setSentences(s);
     setIdsToSubmit([]);
-  }, []);
+  }, [batchSize]);
+
+  useEffect(() => {
+    // Also runs upon mount
+    refreshSentences();
+  }, [batchSize]);
 
   const handleSendToggle = (uuid: string) => {
     setIdsToSubmit((currentIds) => {
@@ -65,10 +79,10 @@ const ReviewData = () => {
 
   // On first load
   useEffect(() => {
-    refreshSentences();
-    getSettings().then((settings) =>
-      setSelectAllByDefault(settings.defaultToAllSelected)
-    );
+    getSettings().then((settings) => {
+      setSelectAllByDefault(settings.defaultToAllSelected);
+      setBatchSize(settings.sentencesPerPage);
+    });
   }, []);
 
   useEffect(() => {
@@ -77,7 +91,7 @@ const ReviewData = () => {
     }
   }, [sentences, selectAllByDefault]);
 
-  const areAllSelected = idsToSubmit.length === 5;
+  const areAllSelected = idsToSubmit.length === batchSize;
 
   const handleSelectAll = () => {
     if (areAllSelected) {
@@ -85,6 +99,12 @@ const ReviewData = () => {
     } else {
       setIdsToSubmit(sentences.map((s) => s.uuid));
     }
+  };
+
+  const persistBatchSize = async (size: number) => {
+    setBatchSize(size);
+
+    await putSettings({ sentencesPerPage: size });
   };
 
   return (
@@ -143,17 +163,39 @@ const ReviewData = () => {
         </Grid>
       ))}
 
-      <Grid item xs={12}>
-        <Button
-          startIcon={
-            idsToSubmit.length === 0 ? <SkipNextIcon /> : <CloudUploadIcon />
-          }
-          color="secondary"
-          variant="contained"
-          onClick={handleSubmit}
+      <Grid item container xs={12}>
+        <Grid item>
+          <Button
+            startIcon={
+              idsToSubmit.length === 0 ? <SkipNextIcon /> : <CloudUploadIcon />
+            }
+            color="secondary"
+            variant="contained"
+            onClick={handleSubmit}
+          >
+            {idsToSubmit.length === 0 ? "Skip" : "Submit"} and move to next
+          </Button>
+        </Grid>
+
+        <Grid
+          item
+          style={{ marginLeft: "auto", display: "flex", alignItems: "center" }}
         >
-          {idsToSubmit.length === 0 ? "Skip" : "Submit"} and move to next
-        </Button>
+          <Select
+            labelId="per-page-select-label"
+            style={{ marginRight: "0.5rem" }}
+            value={batchSize}
+            onChange={(e) => persistBatchSize(e.target.value as number)}
+          >
+            {PER_PAGE_OPTIONS.map((option) => (
+              <MenuItem value={option} key={option}>
+                {option}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <Typography>per page</Typography>
+        </Grid>
       </Grid>
     </Grid>
   );
