@@ -19,3 +19,11 @@ export interface ISettings {
   defaultToAllSelected: boolean;
   sentencesPerPage: number;
 }
+
+export interface IApp {
+  id: number;
+  name: string;
+  path: string;
+  hash: string;
+  updatedAt: Date;
+}

@@ -3,7 +3,7 @@ import hasha from "hasha";
 import { AAppDataGetters, AppName } from "./types";
 
 class PlainText extends AAppDataGetters {
-  private name: AppName = "PlainText";
+  private name: AppName = "Plain Text";
   private cachedLocation?: string;
   private locations: string[];
   private processFileFunc: (buff: Buffer) => string;

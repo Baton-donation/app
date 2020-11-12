@@ -35,7 +35,7 @@ export const appFactory = ({
   switch (name) {
     case "Dasher":
       return dasher;
-    case "PlainText":
+    case "Plain Text":
       return new PlainText({ locations: [path] });
   }
 };

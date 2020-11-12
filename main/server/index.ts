@@ -21,7 +21,11 @@ const getInstalledApps = async () => {
 
 const refreshDataFromAllApps = async (
   connection: Connection,
-  { force = false, firstTime = false } = {}
+  {
+    force = false,
+    firstTime = false,
+    appFilter = [],
+  }: { force?: boolean; firstTime?: boolean; appFilter?: number[] } = {}
 ) => {
   const appRepo = connection.manager.getRepository(App);
   const sentencesRepo = connection.manager.getRepository(Sentence);
@@ -29,75 +33,80 @@ const refreshDataFromAllApps = async (
   const installedApps = await appRepo.find();
 
   await Promise.all(
-    installedApps.map(async (appModel) => {
-      const thisApp = appFactory({
-        name: appModel.name as AppName,
-        path: appModel.path,
-      });
+    installedApps
+      .filter((a) => (appFilter.length > 0 ? appFilter.includes(a.id) : true))
+      .map(async (appModel) => {
+        const thisApp = appFactory({
+          name: appModel.name as AppName,
+          path: appModel.path,
+        });
 
-      const currentHash = await thisApp.getHash();
+        const currentHash = await thisApp.getHash();
 
-      if (currentHash !== appModel.hash || force) {
-        // Update
-        const text = await thisApp.getText();
+        if (currentHash !== appModel.hash || force) {
+          // Update
+          const text = await thisApp.getText();
 
-        if (firstTime) {
-          const sentencesInChunks = chunk(getSentences(text), 50);
+          if (firstTime) {
+            const sentencesInChunks = chunk(getSentences(text), 50);
 
-          // Can't use Promise.all, since insert order (therefore createdAt date) would be non-deterministic
-          for (const chunk of sentencesInChunks) {
-            await connection
-              .createQueryBuilder()
-              .insert()
-              .into(Sentence)
-              .values(
-                chunk.map((s) => ({
-                  uuid: uuidv5(s, UUID_NAMESPACE),
+            // Can't use Promise.all, since insert order (therefore createdAt date) would be non-deterministic
+            for (const chunk of sentencesInChunks) {
+              await connection
+                .createQueryBuilder()
+                .insert()
+                .into(Sentence)
+                .values(
+                  chunk.map((s) => ({
+                    uuid: uuidv5(s, UUID_NAMESPACE),
+                    createdAt: new Date(),
+                    submitted: false,
+                    viewed: false,
+                    content: s,
+                  }))
+                )
+                .orIgnore()
+                .execute();
+            }
+          } else {
+            // It's assumed that there's not going to be much new data when updating
+            const sentences = getSentences(text).reverse();
+
+            let seenDuplicateSentences = 0;
+
+            for (const sentence of sentences) {
+              if (seenDuplicateSentences > 5) {
+                // Probably past the new data
+                break;
+              }
+
+              const uuid = uuidv5(sentence, UUID_NAMESPACE);
+
+              const existingSentence = await sentencesRepo.findOne({
+                where: { uuid },
+              });
+
+              if (existingSentence) {
+                seenDuplicateSentences++;
+                continue;
+              } else {
+                const s = sentencesRepo.create({
+                  uuid,
                   createdAt: new Date(),
                   submitted: false,
                   viewed: false,
-                  content: s,
-                }))
-              )
-              .orIgnore()
-              .execute();
-          }
-        } else {
-          // It's assumed that there's not going to be much new data when updating
-          const sentences = getSentences(text).reverse();
+                  content: sentence,
+                });
 
-          let seenDuplicateSentences = 0;
-
-          for (const sentence of sentences) {
-            if (seenDuplicateSentences > 5) {
-              // Probably past the new data
-              break;
-            }
-
-            const uuid = uuidv5(sentence, UUID_NAMESPACE);
-
-            const existingSentence = await sentencesRepo.findOne({
-              where: { uuid },
-            });
-
-            if (existingSentence) {
-              seenDuplicateSentences++;
-              continue;
-            } else {
-              const s = sentencesRepo.create({
-                uuid,
-                createdAt: new Date(),
-                submitted: false,
-                viewed: false,
-                content: sentence,
-              });
-
-              await sentencesRepo.save(s);
+                await sentencesRepo.save(s);
+              }
             }
           }
+
+          appModel.updatedAt = new Date();
+          await appRepo.save(appModel);
         }
-      }
-    })
+      })
   );
 };
 
@@ -256,5 +265,52 @@ export const registerIPCHandlers = async (): Promise<void> => {
 
   ipcMain.handle("refresh-data", async () => {
     await refreshDataFromAllApps(connection);
+  });
+
+  ipcMain.handle("get-sources", async () => {
+    return appRepo.find();
+  });
+
+  ipcMain.handle(
+    "add-source",
+    async (_, { name, path }: { name: AppName; path: string }) => {
+      const app = appFactory({ name, path });
+
+      const newApp = appRepo.create({
+        name,
+        path: await app.getPath(),
+        hash: "",
+        updatedAt: new Date(),
+      });
+
+      await appRepo.save(newApp);
+
+      await refreshDataFromAllApps(connection, {
+        firstTime: true,
+        appFilter: [newApp.id],
+      });
+    }
+  );
+
+  ipcMain.handle("delete-source", async (_, id: number) => {
+    const app = await appRepo.findOne({ where: { id } });
+
+    if (app) {
+      await appRepo.remove(app);
+    } else {
+      throw new Error(`App with ID ${id} does not exist.`);
+    }
+  });
+
+  ipcMain.handle("get-possible-new-sources", async () => {
+    const possible: AppName[] = ["Plain Text"];
+
+    const apps = await appRepo.find();
+
+    if (!apps.find((a) => a.name === "Dasher")) {
+      possible.push("Dasher");
+    }
+
+    return possible;
   });
 };

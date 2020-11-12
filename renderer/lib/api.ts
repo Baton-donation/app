@@ -1,5 +1,5 @@
 import electron from "electron";
-import { ISentence, IStats, ISettings } from "./types";
+import { ISentence, IStats, ISettings, IApp } from "./types";
 
 // Prevent SSR webpacking
 const ipcRenderer = electron.ipcRenderer || false;
@@ -64,6 +64,28 @@ export const putSettings = async (newSettings: Partial<ISettings>) => {
 
 export const refreshData = async () => {
   return ipcRenderer.invoke("refresh-data");
+};
+
+export const getSources = async (): Promise<IApp[]> => {
+  return ipcRenderer.invoke("get-sources");
+};
+
+export const addSource = async ({
+  name,
+  path,
+}: {
+  name: string;
+  path: string;
+}) => {
+  return ipcRenderer.invoke("add-source", { name, path });
+};
+
+export const deleteSource = async (id: number) => {
+  return ipcRenderer.invoke("delete-source", id);
+};
+
+export const getPossibleNewSources = async (): Promise<string[]> => {
+  return ipcRenderer.invoke("get-possible-new-sources");
 };
 
 export type { ISentence, IStats, ISettings };

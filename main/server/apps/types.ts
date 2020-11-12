@@ -1,4 +1,4 @@
-export type AppName = "Dasher" | "PlainText";
+export type AppName = "Dasher" | "Plain Text";
 
 export abstract class AAppDataGetters {
   abstract doesExist(): Promise<boolean>;

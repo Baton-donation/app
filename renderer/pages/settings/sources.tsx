@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Table from "@material-ui/core/Table";
@@ -11,8 +12,24 @@ import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
+import { deleteSource, getSources } from "../../lib/api";
+import { IApp } from "../../lib/types";
 
 const SourcesSettings = () => {
+  const router = useRouter();
+  const [sources, setSources] = useState<IApp[]>([]);
+
+  const updateSources = () => getSources().then(setSources);
+
+  const handleDeleteSource = async (id: number) => {
+    await deleteSource(id);
+    await updateSources();
+  };
+
+  useEffect(() => {
+    updateSources();
+  }, []);
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
@@ -22,7 +39,11 @@ const SourcesSettings = () => {
           </Grid>
 
           <Grid item>
-            <IconButton aria-label="add source" color="primary">
+            <IconButton
+              aria-label="add source"
+              color="primary"
+              onClick={() => router.push("/settings/add-source")}
+            >
               <AddIcon />
             </IconButton>
           </Grid>
@@ -43,15 +64,21 @@ const SourcesSettings = () => {
             </TableHead>
 
             <TableBody>
-              <TableRow>
-                <TableCell>Dasher</TableCell>
-                <TableCell>C:\\...</TableCell>
-                <TableCell>
-                  <IconButton aria-label="delete" color="secondary">
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
+              {sources.map((source) => (
+                <TableRow key={source.id}>
+                  <TableCell>{source.name}</TableCell>
+                  <TableCell>{source.path}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="delete"
+                      color="secondary"
+                      onClick={() => handleDeleteSource(source.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>
