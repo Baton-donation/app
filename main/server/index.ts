@@ -6,6 +6,7 @@ import apps, { appFactory } from "./apps";
 import { getSentences } from "./lib/nlp";
 import { AppName } from "./apps/types";
 import { Connection } from "typeorm";
+import { DragHandleSharp } from "@material-ui/icons";
 
 const UUID_NAMESPACE = "2b677848-e909-434b-9db8-f5a0b8113618";
 
@@ -309,7 +310,10 @@ export const registerIPCHandlers = async (): Promise<void> => {
     const apps = await appRepo.find();
 
     if (!apps.find((a) => a.name === "Dasher")) {
-      possible.push("Dasher");
+      const dasher = appFactory({ name: "Dasher", path: "" });
+      if (await dasher.doesExist()) {
+        possible.push("Dasher");
+      }
     }
 
     return possible;
