@@ -48,3 +48,5 @@ jobs:
         run: yarn install
       - name: Build and publish app
         run: yarn build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
