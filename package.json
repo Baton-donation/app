@@ -22,7 +22,6 @@
     "electron-serve": "^1.0.0",
     "electron-store": "^6.0.1",
     "env-paths": "^2.2.0",
-    "hasha": "^5.2.2",
     "p-event": "^4.2.0",
     "react-use": "^15.3.4",
     "react-virtuoso": "^0.20.1",

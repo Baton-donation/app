@@ -1,5 +1,5 @@
 import fs from "fs";
-import hasha from "hasha";
+import { getHashFromFile } from "../lib/hash";
 import { AAppDataGetters, AppName } from "./types";
 
 class PlainText extends AAppDataGetters {
@@ -55,7 +55,7 @@ class PlainText extends AAppDataGetters {
   }
 
   async getHash() {
-    return hasha.fromFile(await this.getLocation());
+    return getHashFromFile(await this.getLocation());
   }
 
   async getText() {

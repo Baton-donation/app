@@ -103,6 +103,7 @@ const refreshDataFromAllApps = async (
             }
           }
 
+          appModel.hash = await thisApp.getHash();
           appModel.updatedAt = new Date();
           await appRepo.save(appModel);
         }
