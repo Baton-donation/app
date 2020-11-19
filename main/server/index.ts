@@ -49,7 +49,11 @@ const refreshDataFromAllApps = async (
           const text = await thisApp.getText();
 
           if (firstTime) {
-            const sentencesInChunks = chunk(getSentences(text), 50);
+            let sentencesInChunks = chunk(getSentences(text), 50);
+
+            sentencesInChunks = sentencesInChunks.map((chunk) =>
+              chunk.filter((s) => s.trim() !== "")
+            );
 
             // Can't use Promise.all, since insert order (therefore createdAt date) would be non-deterministic
             for (const chunk of sentencesInChunks) {
@@ -76,6 +80,11 @@ const refreshDataFromAllApps = async (
             let seenDuplicateSentences = 0;
 
             for (const sentence of sentences) {
+              // Don't add blank sentences
+              if (sentence.trim() === "") {
+                continue;
+              }
+
               if (seenDuplicateSentences > 5) {
                 // Probably past the new data
                 break;

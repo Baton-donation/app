@@ -26,7 +26,7 @@ const AddSource = () => {
 
   const isFormValid = useMemo(() => {
     if (selectedSource === "Plain Text") {
-      return file !== null;
+      return file !== null && file !== undefined;
     } else if (selectedSource !== "") {
       return true;
     }
