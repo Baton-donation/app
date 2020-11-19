@@ -54,13 +54,12 @@ const SentenceRow = ({
   </Box>
 );
 
-const loadedOffsets: number[] = [];
-
 const EditData = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [sentences, setSentences] = useState<ISentence[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [scrollableHeight, setScrollableHeight] = useState(0);
+  const [loadedOffsets, setLoadedOffsets] = useState<number[]>([]);
 
   const { height: windowHeight } = useWindowSize();
 
@@ -71,10 +70,10 @@ const EditData = () => {
       return;
     }
 
-    loadedOffsets.push(offset);
-
     setIsLoading(true);
     const s = await getSubmittedSentences({ limit: CHUNK_SIZE, offset });
+
+    setLoadedOffsets((offsets) => [...offsets, offset]);
 
     setSentences((currentSentences) => [...currentSentences, ...s]);
     setIsLoading(false);
