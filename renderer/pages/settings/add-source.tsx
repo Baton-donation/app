@@ -6,8 +6,10 @@ import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { getPossibleNewSources, addSource } from "../../lib/api";
 import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const AddSource = () => {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [sources, setSources] = useState<string[]>([]);
   const [selectedSource, setSelectedSource] = useState("");
@@ -34,9 +36,11 @@ const AddSource = () => {
     return false;
   }, [file, selectedSource]);
 
-  const handleAdd = () => {
-    addSource({ name: selectedSource, path: file?.path ?? "" });
-    router.push("/settings/sources");
+  const handleAdd = async () => {
+    setLoading(true);
+    await addSource({ name: selectedSource, path: file?.path ?? "" });
+    setLoading(false);
+    await router.push("/settings/sources");
   };
 
   return (
@@ -90,8 +94,9 @@ const AddSource = () => {
         <Button
           color="primary"
           variant="contained"
-          disabled={!isFormValid}
+          disabled={!isFormValid || loading}
           onClick={handleAdd}
+          endIcon={loading ? <CircularProgress size="0.875rem" /> : null}
         >
           Add
         </Button>
