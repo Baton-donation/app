@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useRef,
   useLayoutEffect,
+  useMemo,
 } from "react";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
@@ -14,20 +15,24 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { Virtuoso } from "react-virtuoso";
 import { useWindowSize } from "react-use";
+import PIIWarningIcon from "../../components/pii-warning-icon";
 import {
   getSubmittedSentences,
   deleteSubmittedSentence,
   ISentence,
 } from "../../lib/api";
+import { doesContainPersonalInformation } from "../../lib/pii";
 
 const CHUNK_SIZE = 10;
 
 const SentenceRow = ({
   sentence,
   onDelete,
+  dangerous,
 }: {
   sentence: ISentence;
   onDelete: (uuid: string) => void;
+  dangerous: boolean;
 }) => (
   <Box>
     <div style={{ height: "1.5rem" }} />
@@ -38,14 +43,24 @@ const SentenceRow = ({
             <Typography variant="body1">{sentence.content}</Typography>
           </Grid>
 
-          <Grid item xs="auto" style={{ marginLeft: "auto" }}>
-            <IconButton
-              aria-label="delete"
-              color="secondary"
-              onClick={() => onDelete(sentence.uuid)}
-            >
-              <DeleteIcon />
-            </IconButton>
+          <Grid
+            item
+            xs="auto"
+            container
+            style={{ marginLeft: "auto", width: "auto" }}
+            alignItems="center"
+          >
+            <Grid item>{dangerous && <PIIWarningIcon />}</Grid>
+
+            <Grid item>
+              <IconButton
+                aria-label="delete"
+                color="secondary"
+                onClick={() => onDelete(sentence.uuid)}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </Grid>
           </Grid>
         </Grid>
       </Box>
@@ -70,14 +85,16 @@ const EditData = () => {
       return;
     }
 
-    setIsLoading(true);
-    const s = await getSubmittedSentences({ limit: CHUNK_SIZE, offset });
-
     setLoadedOffsets((offsets) => [...offsets, offset]);
 
-    setSentences((currentSentences) => [...currentSentences, ...s]);
+    setIsLoading(true);
+    const s = await getSubmittedSentences({ limit: CHUNK_SIZE, offset });
+    setSentences((currentSentences) => [
+      ...currentSentences,
+      ...s.filter((p) => !currentSentences.find((c) => c.uuid == p.uuid)),
+    ]);
     setIsLoading(false);
-  }, [sentences]);
+  }, [loadedOffsets, sentences]);
 
   const handleDelete = useCallback(async (uuid: string) => {
     await deleteSubmittedSentence(uuid);
@@ -86,6 +103,18 @@ const EditData = () => {
       currentSentences.filter((s) => s.uuid !== uuid)
     );
   }, []);
+
+  const dangerousSentenceIndices = useMemo(
+    () =>
+      sentences.reduce<number[]>((accum, sentence, i) => {
+        if (doesContainPersonalInformation(sentence.content)) {
+          accum.push(i);
+        }
+
+        return accum;
+      }, []),
+    [sentences]
+  );
 
   useEffect(() => {
     loadMore();
@@ -115,7 +144,11 @@ const EditData = () => {
         overscan={500}
         totalCount={sentences.length}
         item={(index) => (
-          <SentenceRow sentence={sentences[index]} onDelete={handleDelete} />
+          <SentenceRow
+            sentence={sentences[index]}
+            onDelete={handleDelete}
+            dangerous={dangerousSentenceIndices.includes(index)}
+          />
         )}
         endReached={() => loadMore()}
         atBottomStateChange={(atBottom) => {

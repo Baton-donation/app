@@ -6,7 +6,6 @@ import apps, { appFactory } from "./apps";
 import { getSentences } from "./lib/nlp";
 import { AppName } from "./apps/types";
 import { Connection } from "typeorm";
-import { DragHandleSharp } from "@material-ui/icons";
 
 const UUID_NAMESPACE = "2b677848-e909-434b-9db8-f5a0b8113618";
 

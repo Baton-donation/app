@@ -7,12 +7,11 @@ import CheckCircle from "@material-ui/icons/CheckCircle";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
-import WarningIcon from "@material-ui/icons/Warning";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-import Tooltip from "@material-ui/core/Tooltip";
+import PIIWarningIcon from "../../components/pii-warning-icon";
 import {
   getSentenceBatch,
   submitSentencesByUUIDs,
@@ -187,9 +186,7 @@ const ReviewData = () => {
 
                   {dangerousSentenceIds.includes(sentence.uuid) && (
                     <Grid item xs="auto">
-                      <Tooltip title="This may contain personal information">
-                        <WarningIcon color="error" />
-                      </Tooltip>
+                      <PIIWarningIcon />
                     </Grid>
                   )}
                 </Grid>
