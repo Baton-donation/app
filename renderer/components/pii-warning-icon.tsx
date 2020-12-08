@@ -3,7 +3,7 @@ import Tooltip from "@material-ui/core/Tooltip";
 import WarningIcon from "@material-ui/icons/Warning";
 
 const PIIWarningIcon = () => (
-  <Tooltip title="This may contain personal information">
+  <Tooltip title="This sentence may include personal information">
     <WarningIcon color="error" />
   </Tooltip>
 );

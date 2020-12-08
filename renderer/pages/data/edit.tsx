@@ -131,7 +131,7 @@ const EditData = () => {
   return (
     <Grid container spacing={5}>
       <Grid item xs={12} ref={headerRef}>
-        <Typography variant="h2">Edit uploaded data</Typography>
+        <Typography variant="h2">Edit submitted sentences</Typography>
       </Grid>
 
       <Virtuoso
@@ -165,7 +165,7 @@ const EditData = () => {
 };
 
 EditData.breadcrumb = {
-  name: "back to dashboard",
+  name: "Dashboard",
   href: "/dashboard",
 };
 

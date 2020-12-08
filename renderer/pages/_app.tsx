@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps }: AppProps) {
             <Link
               href={breadcrumbLink.href}
               variant="h6"
-              style={{ marginLeft: "auto" }}
+              style={{ marginLeft: "auto", textTransform: "capitalize" }}
             >
               {breadcrumbLink.name}
             </Link>

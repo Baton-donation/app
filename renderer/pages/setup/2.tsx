@@ -19,19 +19,23 @@ const SecondStep = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item>
+      <Grid item xs={12}>
         <Typography variant="h2" gutterBottom>
-          First Time Setup
+          Get set up
         </Typography>
       </Grid>
 
       <Grid item xs={8}>
+        <Typography gutterBottom>
+          You can also allow us to add an anonymous ID to your uploaded
+          sentences. This will help us to better model the data, and improve our
+          research.
+        </Typography>
+
         <Typography>
-          When submitting data, would you like to include an anonymous ID to
-          better assist researchers? This ID will be attached with each uploaded
-          sentence in an effort to better model the data. If you don’t include
-          this ID, your sentences will be added to a global pool with no
-          information that can be used to correlate them.
+          If you choose not to add an anonymous ID, we&apos;ll still use your
+          sentences as part of a global pool. There will be no way to relate the
+          sentences to each other, or to you.
         </Typography>
       </Grid>
 
@@ -45,7 +49,7 @@ const SecondStep = () => {
             <FormControlLabel
               value="yes"
               control={<Radio />}
-              label="Yes, include an anonymous ID"
+              label="Yes, add an anonymous ID"
             />
             <FormControlLabel
               value="no"

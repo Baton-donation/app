@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Link from "../components/link";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
+import RefreshIcon from "@material-ui/icons/Refresh";
+import Edit from "@material-ui/icons/Edit";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getStats, IStats, refreshData } from "../lib/api";
 
@@ -36,8 +37,8 @@ const Dashboard = () => {
       {stats && stats.submittedSentences > 0 && (
         <Grid item xs={12}>
           <Typography variant="subtitle1">
-            Thank you for contributing <b>{stats.submittedSentences}</b>{" "}
-            sentences!
+            You have submitted <b>{stats.submittedSentences}</b> sentences,
+            thank you.
           </Typography>
         </Grid>
       )}
@@ -45,7 +46,7 @@ const Dashboard = () => {
       {stats && stats.unviewedSentences > 0 && (
         <Grid item xs={12}>
           <Typography variant="subtitle1">
-            There are <b>{stats.unviewedSentences}</b> sentences to review.
+            You have <b>{stats.unviewedSentences}</b> new sentences to review.
           </Typography>
         </Grid>
       )}
@@ -60,18 +61,20 @@ const Dashboard = () => {
             onClick={() => router.push("/data/review")}
             disabled={loading}
           >
-            Review new sentences
+            Review now
           </Button>
         ) : (
-          <Typography>
-            There are currently no new sentences available for review.
-          </Typography>
+          <Typography>You have no new sentences to review.</Typography>
         )}
       </Grid>
 
       <Grid item xs={12}>
-        <Button onClick={handleDataRefresh} disabled={loading}>
-          Refresh data
+        <Button
+          onClick={handleDataRefresh}
+          disabled={loading}
+          startIcon={<RefreshIcon />}
+        >
+          Refresh sentences
         </Button>
 
         {loading && <CircularProgress size="1rem" />}
@@ -79,7 +82,12 @@ const Dashboard = () => {
 
       {stats && stats.submittedSentences > 0 && (
         <Grid item xs={12}>
-          <Link href="/data/edit">Edit uploaded data</Link>
+          <Button
+            startIcon={<Edit />}
+            onClick={() => router.push("/data/edit")}
+          >
+            Edit submitted sentences
+          </Button>
         </Grid>
       )}
     </Grid>

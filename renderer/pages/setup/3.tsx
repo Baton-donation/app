@@ -1,13 +1,23 @@
 import React, { useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Grid from "@material-ui/core/Grid";
 import { useRouter } from "next/router";
 import { getInstalledApps, importFromInstalledApps } from "../../lib/api";
+
+const buildCommaSeperatedString = (values: string[]) =>
+  values.reduce((accum, value, i) => {
+    if (values.length === 1) {
+      return value;
+    }
+
+    if (i === values.length - 1) {
+      return `${accum}, and ${value}`;
+    }
+
+    return `${accum}, ${value}`;
+  }, "");
 
 const ThirdStep = () => {
   const [appNames, setAppNames] = useState<string[]>([]);
@@ -38,26 +48,17 @@ const ThirdStep = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item>
+      <Grid item xs={12}>
         <Typography variant="h2" gutterBottom>
-          First Time Setup
+          Get set up
         </Typography>
       </Grid>
 
       <Grid item xs={8}>
-        <Typography>It looks like you&apos;ve used:</Typography>
-
-        <List>
-          <ListItem>
-            {appNames.map((appName) => (
-              <ListItemText primary={appName} key={appName} />
-            ))}
-          </ListItem>
-        </List>
-
         <Typography>
-          in the past. Would you like to automatically import past and future
-          data for manual review from these apps?
+          It looks like you’ve used {buildCommaSeperatedString(appNames)}{" "}
+          before. Would you like to import past and future data for manual
+          review?
         </Typography>
       </Grid>
 
@@ -70,12 +71,12 @@ const ThirdStep = () => {
           color="primary"
           disabled={loading}
         >
-          Yes
+          Import data
         </Button>
       </Grid>
       <Grid item>
         <Button onClick={goToDashboard} disabled={loading}>
-          Skip, I&apos;ll set this up later
+          Maybe later
         </Button>
       </Grid>
 

@@ -10,8 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import Delete from "@material-ui/icons/Delete";
+import Edit from "@material-ui/icons/Edit";
 import { useRouter } from "next/router";
-import Link from "../../components/link";
 import { default as TextLink } from "@material-ui/core/Link";
 import {
   getSettings,
@@ -78,10 +78,31 @@ const SettingsHome = () => {
         </Typography>
       </Grid>
 
-      <Grid item xs={12} />
+      <Grid item xs={12}>
+        <Typography variant="h5">Data</Typography>
+      </Grid>
 
       <Grid item xs={12}>
-        <Link href="/settings/sources">Edit sources</Link>
+        <Button
+          startIcon={<Edit />}
+          onClick={() => router.push("/settings/sources")}
+        >
+          Edit data sources
+        </Button>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Button
+          color="secondary"
+          onClick={() => setShowDeletionConfirmation(true)}
+          startIcon={<Delete />}
+        >
+          Delete all locally stored data
+        </Button>
+      </Grid>
+
+      <Grid item xs={12}>
+        <Typography variant="h5">Interface</Typography>
       </Grid>
 
       <Grid item xs={12}>
@@ -96,16 +117,6 @@ const SettingsHome = () => {
           }
         >
           Default to selecting all sentences
-        </Button>
-      </Grid>
-
-      <Grid item xs={12}>
-        <Button
-          color="secondary"
-          onClick={() => setShowDeletionConfirmation(true)}
-          startIcon={<Delete />}
-        >
-          Delete all locally stored data
         </Button>
       </Grid>
 
@@ -142,7 +153,7 @@ const SettingsHome = () => {
 };
 
 SettingsHome.breadcrumb = {
-  name: "back to dashboard",
+  name: "Dashboard",
   href: "/dashboard",
 };
 

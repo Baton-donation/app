@@ -9,9 +9,9 @@ const FirstStep = () => {
 
   return (
     <Grid container spacing={1}>
-      <Grid item>
+      <Grid item xs={12}>
         <Typography variant="h2" gutterBottom>
-          First Time Setup
+          Get set up
         </Typography>
       </Grid>
 
@@ -28,7 +28,7 @@ const FirstStep = () => {
         color="primary"
         onClick={() => router.push("/setup/2")}
       >
-        I understand
+        Agree and continue
       </Button>
     </Grid>
   );

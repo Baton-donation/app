@@ -46,11 +46,11 @@ const AddSource = () => {
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
-        <Typography variant="h2">Add Source</Typography>
+        <Typography variant="h2">Add source</Typography>
       </Grid>
 
       <Grid item xs={12}>
-        <Typography>Possible sources:</Typography>
+        <Typography>Available data sources:</Typography>
         <Select
           labelId="per-page-select-label"
           style={{ marginRight: "0.5rem" }}
@@ -78,7 +78,9 @@ const AddSource = () => {
               }
             />
             <label htmlFor="file-select">
-              <Button component="span">Select a file</Button>
+              <Button component="span" variant="contained">
+                Select file
+              </Button>
             </label>
           </Grid>
 
@@ -106,7 +108,7 @@ const AddSource = () => {
 };
 
 AddSource.breadcrumb = {
-  name: "back to sources",
+  name: "Sources",
   href: "/settings/sources",
 };
 

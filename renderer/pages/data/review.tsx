@@ -5,6 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
+import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@material-ui/icons/CheckBox";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import SkipNextIcon from "@material-ui/icons/SkipNext";
 import Button from "@material-ui/core/Button";
@@ -136,6 +138,10 @@ const ReviewData = () => {
 
   return (
     <Grid container spacing={5}>
+      <Grid item xs={12}>
+        <Typography variant="h2">Review sentences</Typography>
+      </Grid>
+
       <Grid item container>
         <Grid item>
           <Button
@@ -169,9 +175,9 @@ const ReviewData = () => {
                       color="primary"
                       startIcon={
                         idsToSubmit.includes(sentence.uuid) ? (
-                          <CheckCircle />
+                          <CheckBoxIcon />
                         ) : (
-                          <RadioButtonUncheckedIcon />
+                          <CheckBoxOutlineBlankIcon />
                         )
                       }
                       onClick={() => handleSendToggle(sentence.uuid)}
@@ -235,7 +241,7 @@ const ReviewData = () => {
 };
 
 ReviewData.breadcrumb = {
-  name: "back to dashboard",
+  name: "Dashboard",
   href: "/dashboard",
 };
 

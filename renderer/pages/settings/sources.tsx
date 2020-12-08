@@ -9,6 +9,7 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/Add";
@@ -39,26 +40,27 @@ const SourcesSettings = () => {
           </Grid>
 
           <Grid item>
-            <IconButton
+            <Button
               aria-label="add source"
               color="primary"
               onClick={() => router.push("/settings/add-source")}
+              startIcon={<AddIcon />}
             >
-              <AddIcon />
-            </IconButton>
+              add source
+            </Button>
           </Grid>
         </Grid>
       </Grid>
 
       <Grid item xs={12} />
 
-      <Grid item xs={6}>
+      <Grid item xs={12}>
         <TableContainer component={Paper}>
           <Table aria-label="sources list">
             <TableHead>
               <TableRow>
-                <TableCell>App</TableCell>
-                <TableCell>File location</TableCell>
+                <TableCell>Source</TableCell>
+                <TableCell>Data location</TableCell>
                 <TableCell>Remove</TableCell>
               </TableRow>
             </TableHead>
@@ -88,7 +90,7 @@ const SourcesSettings = () => {
 };
 
 SourcesSettings.breadcrumb = {
-  name: "back to settings",
+  name: "Settings",
   href: "/settings",
 };
 
