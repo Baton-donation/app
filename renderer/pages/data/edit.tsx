@@ -143,7 +143,7 @@ const EditData = () => {
         }}
         overscan={500}
         totalCount={sentences.length}
-        item={(index) => (
+        itemContent={(index) => (
           <SentenceRow
             sentence={sentences[index]}
             onDelete={handleDelete}
