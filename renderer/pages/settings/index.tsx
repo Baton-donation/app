@@ -68,13 +68,12 @@ const SettingsHome = () => {
 
       <Grid item xs={6}>
         <Typography>
-          An anonymous ID is currently{" "}
-          {settings?.includeUUID ? <b>included</b> : <b>not included</b>} when
-          submitting data.{" "}
-          {settings?.includeUUID ? `Your ID is ${settings?.uuid}.` : ""} Please
-          email{" "}
+          Please email{" "}
           <TextLink href="mailto:baton@dasher.com">baton@dasher.com</TextLink>{" "}
           with any questions.
+          {settings?.includeUUID
+            ? `Your anonymized ID is ${settings?.uuid}.`
+            : "You do not have an anonymized ID associated with your data."}
         </Typography>
       </Grid>
 
