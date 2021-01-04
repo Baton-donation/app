@@ -1,6 +1,6 @@
 Baton is a simple app that allows AAC software users to upload data for research purposes.
 
-Currently, Baton supports extracting data from Dasher. We plan to add additional supported apps in the future.
+Currently, Baton supports extracting data from Dasher and plain text files. We plan to add additional supported apps in the future.
 
 ## Usage
 
