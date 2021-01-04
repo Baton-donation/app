@@ -5,8 +5,11 @@ import { getDBConnection, deleteDB, Settings, Sentence, App } from "./models";
 import apps, { appFactory } from "./apps";
 import { getSentences } from "./lib/nlp";
 import { AppName } from "./apps/types";
-import { Connection } from "typeorm";
+import { Connection, In } from "typeorm";
+import sodium from "libsodium-wrappers";
+import APIClient, { ISentenceDto } from "./lib/api";
 
+let SERVER_PUBLIC_KEY: Uint8Array;
 const UUID_NAMESPACE = "2b677848-e909-434b-9db8-f5a0b8113618";
 
 const getInstalledApps = async () => {
@@ -127,6 +130,13 @@ export const registerIPCHandlers = async (): Promise<void> => {
   const settingsRepo = connection.manager.getRepository(Settings);
   const appRepo = connection.manager.getRepository(App);
 
+  const api = new APIClient();
+
+  // Get server's public key upon load
+  api.getPublicKey().then((key) => {
+    SERVER_PUBLIC_KEY = Buffer.from(key, "base64");
+  });
+
   ipcMain.handle("is-first-open", async () => {
     const settings = await connection.manager.findOne(Settings);
 
@@ -208,6 +218,39 @@ export const registerIPCHandlers = async (): Promise<void> => {
   ipcMain.handle(
     "submit-sentences-by-uuids",
     async (_, { uuids }: { uuids: string[] }) => {
+      const settings = await connection.manager.findOne(Settings);
+
+      if (!settings) {
+        throw new Error("Missing settings");
+      }
+
+      if (!SERVER_PUBLIC_KEY) {
+        throw new Error("Missing server's public key");
+      }
+
+      // Get sentences
+      const sentences = await sentencesRepo.find({
+        where: {
+          uuid: In(uuids),
+        },
+      });
+
+      await sodium.ready;
+
+      const encryptedSentences: ISentenceDto[] = sentences.map((s) => {
+        const content = Buffer.from(
+          sodium.crypto_box_seal(s.content, SERVER_PUBLIC_KEY)
+        );
+
+        return {
+          uuid: s.uuid,
+          anonymousUUID: settings.includeUUID ? settings.uuid : null,
+          content: content.toString("base64"),
+        };
+      });
+
+      await api.submitSentences(encryptedSentences);
+
       await connection
         .createQueryBuilder()
         .update(Sentence)

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
+import Alert from "@material-ui/lab/Alert";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import CheckBoxOutlineBlankIcon from "@material-ui/icons/CheckBoxOutlineBlank";
@@ -29,6 +30,8 @@ const PER_PAGE_OPTIONS = [5, 7, 10, 15, 20];
 
 const ReviewData = () => {
   const router = useRouter();
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [selectAllByDefault, setSelectAllByDefault] = useState(false);
   const [batchSize, setBatchSize] = useState(PER_PAGE_OPTIONS[0]);
   const [sentences, setSentences] = useState<ISentence[]>([]);
@@ -109,17 +112,22 @@ const ReviewData = () => {
   };
 
   const handleSubmit = async () => {
-    const promises = [
-      markSentencesAsViewedByUUIDs(sentences.map((s) => s.uuid)),
-    ];
+    setIsLoading(true);
+    try {
+      if (idsToSubmit.length > 0) {
+        await submitSentencesByUUIDs(idsToSubmit);
+      }
 
-    if (idsToSubmit.length > 0) {
-      promises.push(submitSentencesByUUIDs(idsToSubmit));
+      await markSentencesAsViewedByUUIDs(sentences.map((s) => s.uuid)),
+        await refreshSentences();
+
+      setError("");
+    } catch (error) {
+      console.log(error);
+      setError(`An error occured. Please try again later. (${error.message})`);
+    } finally {
+      setIsLoading(false);
     }
-
-    await Promise.all(promises);
-
-    await refreshSentences();
   };
 
   const handleSelectAll = () => {
@@ -141,6 +149,12 @@ const ReviewData = () => {
       <Grid item xs={12}>
         <Typography variant="h2">Review sentences</Typography>
       </Grid>
+
+      {error !== "" && (
+        <Grid item>
+          <Alert severity="error">{error}</Alert>
+        </Grid>
+      )}
 
       <Grid item container>
         <Grid item>
@@ -205,6 +219,7 @@ const ReviewData = () => {
       <Grid item container xs={12}>
         <Grid item>
           <Button
+            disabled={isLoading}
             startIcon={
               idsToSubmit.length === 0 ? <SkipNextIcon /> : <CloudUploadIcon />
             }

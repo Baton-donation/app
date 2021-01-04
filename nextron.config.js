@@ -1,5 +1,7 @@
-const path = require('path');
+require('dotenv').config()
 
+const webpack = require('webpack')
+const path = require('path');
 const cwd = process.cwd();
 
 module.exports = {
@@ -28,5 +30,11 @@ module.exports = {
           },
         ],
       },
+      plugins: [
+        new webpack.DefinePlugin({
+          'process.env.BASE_API_URL': JSON.stringify(process.env.BASE_API_URL)
+        }),
+        ...defaultConfig.plugins,
+      ]
     }),
 };
