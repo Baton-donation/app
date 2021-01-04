@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { v4 as uuidv4, v5 as uuidv5 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import chunk from "chunk";
 import { getDBConnection, deleteDB, Settings, Sentence, App } from "./models";
 import apps, { appFactory } from "./apps";
@@ -10,7 +10,6 @@ import sodium from "libsodium-wrappers";
 import APIClient, { ISentenceDto } from "./lib/api";
 
 let SERVER_PUBLIC_KEY: Uint8Array;
-const UUID_NAMESPACE = "2b677848-e909-434b-9db8-f5a0b8113618";
 
 const getInstalledApps = async () => {
   const installedApps = [];
@@ -65,14 +64,13 @@ const refreshDataFromAllApps = async (
                 .into(Sentence)
                 .values(
                   chunk.map((s) => ({
-                    uuid: uuidv5(s, UUID_NAMESPACE),
+                    uuid: uuidv4(),
                     createdAt: new Date(),
                     submitted: false,
                     viewed: false,
                     content: s,
                   }))
                 )
-                .orIgnore()
                 .execute();
             }
           } else {
@@ -92,10 +90,8 @@ const refreshDataFromAllApps = async (
                 break;
               }
 
-              const uuid = uuidv5(sentence, UUID_NAMESPACE);
-
               const existingSentence = await sentencesRepo.findOne({
-                where: { uuid },
+                where: { content: sentence },
               });
 
               if (existingSentence) {
@@ -103,7 +99,7 @@ const refreshDataFromAllApps = async (
                 continue;
               } else {
                 const s = sentencesRepo.create({
-                  uuid,
+                  uuid: uuidv4(),
                   createdAt: new Date(),
                   submitted: false,
                   viewed: false,
@@ -151,6 +147,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
         includeUUID: includeId,
         uuid: uuidv4(),
         sentencesPerPage: 5,
+        defaultToAllSelected: false,
       });
 
       await settingsRepo.save(settings);
@@ -293,6 +290,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
   ipcMain.handle(
     "delete-submitted-sentence",
     async (_, { uuid }: { uuid: string }) => {
+      await api.deleteSentence(uuid);
       await sentencesRepo.update(uuid, { submitted: false });
     }
   );

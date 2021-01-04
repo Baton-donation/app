@@ -17,6 +17,10 @@ export default class APIClient {
     await this.client.post("sentences/many", { json: sentences });
   }
 
+  async deleteSentence(uuid: string) {
+    await this.client.delete(`sentences/${uuid}`);
+  }
+
   async getPublicKey() {
     const { body } = await this.client.get("keys/public");
 

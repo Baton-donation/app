@@ -9,7 +9,8 @@
     "dev": "nextron",
     "build": "npx nextron build",
     "postinstall": "electron-builder install-app-deps",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --fix"
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --fix",
+    "typeorm": "ts-node ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.12.1",
@@ -68,6 +69,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "truncating-stream": "^1.0.2",
+    "ts-node": "^9.1.1",
     "typescript": "^4.1.3",
     "webpack": "4.44.2",
     "yargs": "^16.2.0"

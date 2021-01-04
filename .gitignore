@@ -6,3 +6,4 @@ dist
 .DS_Store
 test-data/apps
 .env
+ormconfig.env

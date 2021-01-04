@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, Index } from "typeorm";
 
 @Entity()
 export class Sentence {
@@ -14,6 +14,7 @@ export class Sentence {
   @Column()
   viewed!: boolean;
 
+  @Index()
   @Column()
   content!: string;
 }

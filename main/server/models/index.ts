@@ -6,9 +6,7 @@ import del from "del";
 import { Settings } from "./entity/Settings";
 import { Sentence } from "./entity/Sentence";
 import { App } from "./entity/App";
-import { Initial1604872621134 } from "./migration/initial";
-import { AddSettingsSelectColumn1605132328043 } from "./migration/add-settings-select-column";
-import { AddSettingsNPerPageColumn1605135125698 } from "./migration/add-settings-n-per-page-column";
+import { Initial1609789198949 } from "./migration/1609789198949-Initial";
 
 const DB_PATH = path.join(envPaths("baton").data, "db.sqlite");
 
@@ -19,11 +17,7 @@ export const getDBConnection = async (): Promise<Connection> => {
     type: "sqlite",
     database: DB_PATH,
     entities: [Settings, Sentence, App],
-    migrations: [
-      Initial1604872621134,
-      AddSettingsSelectColumn1605132328043,
-      AddSettingsNPerPageColumn1605135125698,
-    ],
+    migrations: [Initial1609789198949],
     migrationsRun: true,
   });
 };
