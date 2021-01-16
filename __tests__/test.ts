@@ -22,6 +22,7 @@ beforeAll(async () => {
     args: [path.join(__dirname, "../")],
     env: {
       DB_PATH,
+      NODE_ENV: "production",
     },
   });
 

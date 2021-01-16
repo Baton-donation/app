@@ -21,5 +21,5 @@ module.exports = {
   rules: {
     "@typescript-eslint/explicit-module-boundary-types": "off",
   },
-  ignorePatterns: ["node_modules", "app", "dist", "nextron.config.js"],
+  ignorePatterns: ["node_modules", "app", "dist"],
 };

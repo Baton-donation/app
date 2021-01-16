@@ -52,8 +52,13 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
-      - name: Build and publish app
+
+      - name: Build app
         run: yarn build
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BASE_API_URL: ${{ secrets.BASE_API_URL }}
+      
+      - name: Package app
+        run: yarn package
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

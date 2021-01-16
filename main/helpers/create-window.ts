@@ -5,6 +5,16 @@ import {
 } from "electron";
 import Store from "electron-store";
 
+interface IWindowSize {
+  width: number;
+  height: number;
+}
+
+interface IWindowPosition {
+  x: number;
+  y: number;
+}
+
 export default (
   windowName: string,
   options: BrowserWindowConstructorOptions
@@ -13,14 +23,15 @@ export default (
   const name = `window-state-${windowName}`;
   const store = new Store({ name });
   const defaultSize = {
-    width: options.width,
-    height: options.height,
+    width: options.width ?? 800,
+    height: options.height ?? 600,
   };
   let state = {};
   // eslint-disable-next-line prefer-const
   let win: BrowserWindow;
 
-  const restore = () => store.get(key, defaultSize);
+  const restore = (): IWindowSize & IWindowPosition =>
+    store.get(key, defaultSize) as IWindowSize & IWindowPosition;
 
   const getCurrentPosition = () => {
     const position = win.getPosition();
@@ -53,7 +64,9 @@ export default (
     });
   };
 
-  const ensureVisibleOnSomeDisplay = (windowState) => {
+  const ensureVisibleOnSomeDisplay = (
+    windowState: IWindowSize & IWindowPosition
+  ): IWindowSize => {
     const visible = screen.getAllDisplays().some((display) => {
       return windowWithinBounds(windowState, display.bounds);
     });
