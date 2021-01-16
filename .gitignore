@@ -7,3 +7,4 @@ dist
 test-data/apps
 .env
 ormconfig.env
+test-db.sqlite
