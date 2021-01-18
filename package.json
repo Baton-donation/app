@@ -61,6 +61,7 @@
     "@typescript-eslint/eslint-plugin": "^4.9.1",
     "@typescript-eslint/parser": "^4.9.1",
     "babel-loader": "^8.2.2",
+    "babel-plugin-istanbul": "^6.0.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.1",
     "byte-parser": "^1.0.0",
     "concurrently": "^5.3.0",
@@ -99,11 +100,6 @@
     ]
   },
   "jest": {
-    "collectCoverageFrom": [
-      "main/**/*.ts",
-      "renderer/**/*.{ts,tsx}"
-    ],
-    "coverageDirectory": "coverage",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
