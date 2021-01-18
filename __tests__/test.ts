@@ -31,6 +31,20 @@ beforeAll(async () => {
 
 afterAll(async () => {
   if (app && app.isRunning()) {
+    const coverage = await app.webContents.executeJavaScript(
+      "window.__coverage__;"
+    );
+
+    try {
+      await fs.promises.mkdir(".nyc_output");
+    } catch {}
+
+    await fs.promises.writeFile(
+      ".nyc_output/frontend.json",
+      JSON.stringify(coverage),
+      { flag: "w+" }
+    );
+
     await app.stop();
   }
 
@@ -38,6 +52,8 @@ afterAll(async () => {
 });
 
 test("Displays app window", async () => {
+  await app.client.waitUntilWindowLoaded();
+
   const windowCount = await app.client.getWindowCount();
 
   expect(windowCount).toBe(1);

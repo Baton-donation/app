@@ -18,7 +18,8 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "jsx": "preserve",
-    "outDir": "app"
+    "outDir": "app",
+    "sourceMap": true
   },
   "include": [
     "main/**/*.ts",

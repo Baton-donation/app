@@ -9,3 +9,4 @@ test-data/apps
 ormconfig.env
 test-db.sqlite
 coverage
+.nyc_output

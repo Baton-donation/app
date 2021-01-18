@@ -15,6 +15,7 @@
     "package": "electron-builder",
     "start": "NODE_ENV=production electron .",
     "test": "jest",
+    "test:coverage": "nyc jest && nyc report -r lcov",
     "postinstall": "electron-builder install-app-deps",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --fix",
     "typeorm": "ts-node ./node_modules/typeorm/cli.js"
@@ -75,6 +76,7 @@
     "lint-staged": "^10.5.3",
     "make-dir": "^3.1.0",
     "next": "10.0.3",
+    "nyc": "^15.1.0",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
