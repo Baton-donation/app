@@ -56,4 +56,8 @@ jobs:
           BASE_API_URL: 'http://localhost:3000'
       
       - name: Test app
-        run: yarn test
+        run: yarn test --coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+          
