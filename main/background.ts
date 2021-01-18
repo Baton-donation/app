@@ -1,9 +1,10 @@
 import { app } from "electron";
 import serve from "electron-serve";
+import { createServer } from "http";
 import { createWindow } from "./helpers";
 import { registerIPCHandlers } from "./server";
 
-const isProd: boolean = process.env.NODE_ENV === "production";
+const isProd = app.isPackaged || process.env.NODE_ENV === "production";
 
 if (isProd) {
   serve({ directory: "app" });
@@ -12,11 +13,30 @@ if (isProd) {
 }
 
 (async () => {
+  if (!isProd) {
+    // Start Next.js in watch mode
+    // Next isn't in prod bundle, so require here
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const next = require("next");
+    const nextServer = next({ dev: true, dir: "renderer" });
+
+    await nextServer.prepare();
+
+    await new Promise<void>((resolve) => {
+      createServer(nextServer.getRequestHandler()).listen(3000, () => {
+        resolve();
+      });
+    });
+  }
+
   await app.whenReady();
 
   const mainWindow = createWindow("main", {
     width: 1000,
     height: 600,
+    webPreferences: {
+      enableRemoteModule: true,
+    },
   });
 
   if (isProd) {

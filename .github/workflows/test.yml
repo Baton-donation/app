@@ -1,13 +1,10 @@
-name: Build
+name: Test
 
 on: push
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest]
+  test:
+    runs-on: macos-latest
 
     env:
       ELECTRON_CACHE: ${{ github.workspace }}/.cache/electron
@@ -56,9 +53,11 @@ jobs:
       - name: Build app
         run: yarn build
         env:
-          BASE_API_URL: ${{ secrets.BASE_API_URL }}
+          BASE_API_URL: 'http://localhost:3000'
       
-      - name: Package app
-        run: yarn package
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Test app
+        run: yarn test:coverage
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
+          

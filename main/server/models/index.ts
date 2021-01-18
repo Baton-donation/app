@@ -8,7 +8,9 @@ import { Sentence } from "./entity/Sentence";
 import { App } from "./entity/App";
 import { Initial1609789198949 } from "./migration/1609789198949-Initial";
 
-const DB_PATH = path.join(envPaths("baton").data, "db.sqlite");
+const DB_PATH = process.env.DB_PATH
+  ? process.env.DB_PATH
+  : path.join(envPaths("baton").data, "db.sqlite");
 
 export const getDBConnection = async (): Promise<Connection> => {
   console.log(`Storing database at: ${DB_PATH}`);
