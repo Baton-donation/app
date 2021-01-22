@@ -26,4 +26,8 @@ export default class APIClient {
 
     return body;
   }
+
+  async putUserDetails(body: { uuid: string; encryptedData: string }) {
+    await this.client.post("user-details", { json: body });
+  }
 }

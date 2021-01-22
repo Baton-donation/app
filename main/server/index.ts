@@ -367,4 +367,22 @@ export const registerIPCHandlers = async (): Promise<void> => {
 
     return possible;
   });
+
+  ipcMain.handle("upload-user-details", async (_, stringifiedData: string) => {
+    await sodium.ready;
+
+    const encryptedData = Buffer.from(
+      sodium.crypto_box_seal(stringifiedData, SERVER_PUBLIC_KEY)
+    );
+    const settings = await connection.manager.findOne(Settings);
+
+    if (!settings?.uuid) {
+      throw new Error("UUID has not been generated");
+    }
+
+    await api.putUserDetails({
+      uuid: settings.uuid,
+      encryptedData: encryptedData.toString("base64"),
+    });
+  });
 };

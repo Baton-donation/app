@@ -54,6 +54,7 @@ jobs:
         run: yarn build
         env:
           BASE_API_URL: 'http://localhost:3000'
+          BABEL_ENV: 'test'
       
       - name: Test app
         run: yarn test:coverage

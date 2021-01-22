@@ -10,7 +10,7 @@
     "next:export": "next export -o app renderer",
     "server:watch": "tsc --watch",
     "server:build": "tsc",
-    "dev": "concurrently 'yarn server:watch' 'electron . 3000'",
+    "dev": "BABEL_ENV=dev concurrently 'yarn server:watch' 'electron . 3000'",
     "build": "del app && yarn next:build && yarn next:export && yarn server:build",
     "package": "electron-builder",
     "start": "NODE_ENV=production electron .",

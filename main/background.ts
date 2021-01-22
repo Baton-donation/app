@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require("dotenv").config();
 import { app } from "electron";
 import serve from "electron-serve";
 import { createServer } from "http";

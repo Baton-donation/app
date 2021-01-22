@@ -88,4 +88,10 @@ export const getPossibleNewSources = async (): Promise<string[]> => {
   return ipcRenderer.invoke("get-possible-new-sources");
 };
 
+export const uploadUserDetails = async (
+  data: Record<string, unknown>
+): Promise<void> => {
+  ipcRenderer.invoke("upload-user-details", JSON.stringify(data));
+};
+
 export type { ISentence, IStats, ISettings };
