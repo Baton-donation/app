@@ -6,6 +6,12 @@
     "test": {
       "presets": ["next/babel"],
       "plugins": ["istanbul"]
+    },
+    "prod": {
+      "presets": ["next/babel"]
+    },
+    "production": {
+      "presets": ["next/babel"]
     }
   }
 }
