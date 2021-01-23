@@ -21,15 +21,15 @@ const FirstStep = () => {
         <Typography>By proceeding, you agree to the above.</Typography>
       </Grid>
 
-      <Grid item xs={12} />
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => router.push("/setup/2")}
-      >
-        Agree and continue
-      </Button>
+      <Grid item xs={12}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.push("/setup/2")}
+        >
+          Agree and continue
+        </Button>
+      </Grid>
     </Grid>
   );
 };

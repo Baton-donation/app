@@ -12,9 +12,15 @@ const SecondStep = () => {
   const [value, setValue] = useState("no");
 
   const handleNextPage = async () => {
-    await createSettings({ includeId: value === "yes" });
+    const usingAnonId = value === "yes";
 
-    router.push("/setup/3");
+    await createSettings({ includeId: usingAnonId });
+
+    if (usingAnonId) {
+      router.push("/setup/3");
+    } else {
+      router.push("/setup/4");
+    }
   };
 
   return (
@@ -60,9 +66,11 @@ const SecondStep = () => {
         </FormControl>
       </Grid>
 
-      <Button variant="contained" color="primary" onClick={handleNextPage}>
-        Next
-      </Button>
+      <Grid item xs={12}>
+        <Button variant="contained" color="primary" onClick={handleNextPage}>
+          Next
+        </Button>
+      </Grid>
     </Grid>
   );
 };

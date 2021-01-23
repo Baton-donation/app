@@ -1,4 +1,17 @@
 {
-  "presets": ["next/babel"],
-  "plugins": ["istanbul"]
+  "env": {
+    "dev": {
+      "presets": ["next/babel"]
+    },
+    "test": {
+      "presets": ["next/babel"],
+      "plugins": ["istanbul"]
+    },
+    "prod": {
+      "presets": ["next/babel"]
+    },
+    "production": {
+      "presets": ["next/babel"]
+    }
+  }
 }
