@@ -3,7 +3,9 @@ import path from "path";
 import PlainText from "./plain-text";
 import { AAppDataGetters, AppName } from "./types";
 
-const DASHER_PATHS = [path.join(__dirname, "../test-data/apps/dasher.txt")];
+const DASHER_PATHS = [
+  path.join(__dirname, "../../../test-data/apps/dasher.txt"),
+];
 
 if (process.env.APPDATA) {
   DASHER_PATHS.push(
