@@ -53,10 +53,16 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Build app
-        run: yarn build
+      - name: Add environment variables
+        run: |
+          cat <<EOT >> electron-builder.env
+          BASE_API_URL=$BASE_API_URL
+          EOT
         env:
           BASE_API_URL: ${{ secrets.BASE_API_URL }}
+
+      - name: Build app
+        run: yarn build
       
       - name: Package app
         run: yarn package
