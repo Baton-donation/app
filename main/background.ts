@@ -1,12 +1,14 @@
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require("dotenv").config();
+import path from "path";
 import { app } from "electron";
+const isProd = app.isPackaged || process.env.NODE_ENV === "production";
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require("dotenv").config(
+  isProd ? { path: path.join(process.resourcesPath, ".env") } : undefined
+);
 import serve from "electron-serve";
 import { createServer } from "http";
 import { createWindow } from "./helpers";
 import { registerIPCHandlers } from "./server";
-
-const isProd = app.isPackaged || process.env.NODE_ENV === "production";
 
 if (isProd) {
   serve({ directory: "app" });

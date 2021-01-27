@@ -8,7 +8,8 @@ files:
     filter:
       - package.json
       - app
-      - .env
+extraResources:
+  - .env
 publish:
   - github
 
