@@ -54,6 +54,7 @@ jobs:
         run: yarn install
 
       - name: Add environment variables
+        shell: bash
         run: |
           cat <<EOT >> electron-builder.env
           BASE_API_URL=$BASE_API_URL
