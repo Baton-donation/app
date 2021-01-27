@@ -56,7 +56,7 @@ jobs:
       - name: Add environment variables
         shell: bash
         run: |
-          cat <<EOT >> electron-builder.env
+          cat <<EOT >> .env
           BASE_API_URL=$BASE_API_URL
           EOT
         env:
