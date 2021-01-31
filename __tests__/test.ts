@@ -2,6 +2,7 @@ import { Application } from "spectron";
 import electronPath from "electron";
 import path from "path";
 import fs from "fs";
+import * as dasher from "../test-data/lib/dasher";
 
 const deleteFileIfExists = async (path: string) => {
   try {
@@ -16,6 +17,9 @@ let app: Application;
 beforeAll(async () => {
   // Clear database
   await deleteFileIfExists(DB_PATH);
+
+  // Generate Dasher data file
+  await dasher.build({ size: "1mb" });
 
   app = new Application({
     path: (electronPath as unknown) as string,
