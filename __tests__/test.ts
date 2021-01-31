@@ -66,3 +66,18 @@ test("Displays first setup step upon first open", async () => {
 
   expect(text).toBe("Get set up");
 });
+
+test("Goes through setup process", async () => {
+  let button = await app.client.$("span=Agree and continue");
+  await button.click();
+
+  button = await app.client.$("span=Next");
+  await button.click();
+
+  button = await app.client.$("span=Maybe later");
+  await button.click();
+
+  const header = await app.client.$("h2");
+
+  expect(await header.getText()).toBe("Dashboard");
+});
