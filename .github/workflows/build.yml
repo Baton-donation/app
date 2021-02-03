@@ -39,7 +39,7 @@ jobs:
           MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
         run: |
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
-          security import certificate.p12 -k login -P "" -T /usr/bin/codesign
+          security import certificate.p12 -P "" -T /usr/bin/codesign
           security find-identity -v
 
       - name: Install dependencies
