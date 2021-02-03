@@ -13,6 +13,13 @@ extraResources:
 publish:
   - github
 
+afterSign: scripts/notarize.js
+
 win:
   target:
     - portable
+
+mac:
+  hardenedRuntime: true
+  entitlements: build/entitlements.mac.plist
+  entitlementsInherit: build/entitlements.mac.plist
