@@ -39,10 +39,7 @@ jobs:
           MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
         run: |
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
-          security create-keychain -p $MACOS_KEYCHAIN_PASSWORD temp.keychain security default-keychain -s temp.keychain
-          security unlock-keychain -p $MACOS_KEYCHAIN_PASSWORD temp.keychain
-          security import certificate.p12 -k temp.keychain -P "" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $MACOS_KEYCHAIN_PASSWORD temp.keychain
+          security import certificate.p12 -k login -P "" -T /usr/bin/codesign
           security find-identity -v
 
       - name: Install dependencies
