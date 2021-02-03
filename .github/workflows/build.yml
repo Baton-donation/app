@@ -43,7 +43,7 @@ jobs:
           security default-keychain -s build.keychain
           security unlock-keychain -p $MACOS_KEYCHAIN_PASSWORD build.keychain
           security import certificate.p12 -k build.keychain -P "" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k $MACOS_KEYCHAIN_PASSWORD build.keychain
+          security set-key-partition-list -S apple-tool:,apple: -s -k $MACOS_KEYCHAIN_PASSWORD build.keychain
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
