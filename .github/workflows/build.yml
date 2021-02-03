@@ -36,11 +36,10 @@ jobs:
         if: runner.os == 'macOS'
         env:
           MACOS_CERTIFICATE: ${{ secrets.MACOS_CERTIFICATE }}
-          MACOS_KEYCHAIN_PASSWORD: ${{ secrets.MACOS_KEYCHAIN_PASSWORD }}
         run: |
           echo $MACOS_CERTIFICATE | base64 --decode > certificate.p12
           security import certificate.p12 -P "" -T /usr/bin/codesign
-          security find-identity -v
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k ""
 
       - name: Install dependencies
         uses: bahmutov/npm-install@v1
