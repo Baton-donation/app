@@ -16,10 +16,14 @@ publish:
 afterSign: scripts/notarize.js
 
 win:
+  artifactName: "Baton-Windows.exe"
   target:
     - portable
 
 mac:
+  target:
+    - dmg
+  artifactName: "Baton-macOS.dmg"
   hardenedRuntime: true
   entitlements: build/entitlements.mac.plist
   entitlementsInherit: build/entitlements.mac.plist
