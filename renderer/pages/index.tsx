@@ -10,7 +10,7 @@ const EntryPoint = () => {
       isFirstOpen()
         .then((firstOpen) => {
           if (firstOpen) {
-            router.push("/setup/1");
+            router.push("/setup/unlock");
           } else {
             router.push("/dashboard");
           }

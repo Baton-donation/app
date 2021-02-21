@@ -94,4 +94,8 @@ export const uploadUserDetails = async (
   ipcRenderer.invoke("upload-user-details", JSON.stringify(data));
 };
 
+export const checkUnlockCode = async (code: string) => {
+  return ipcRenderer.invoke("check-unlock-code", code);
+};
+
 export type { ISentence, IStats, ISettings };

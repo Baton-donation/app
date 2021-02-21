@@ -385,4 +385,8 @@ export const registerIPCHandlers = async (): Promise<void> => {
       encryptedData: encryptedData.toString("base64"),
     });
   });
+
+  ipcMain.handle("check-unlock-code", async (_, code: string) => {
+    await api.checkUnlockCode(code);
+  });
 };

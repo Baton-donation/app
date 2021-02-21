@@ -30,4 +30,8 @@ export default class APIClient {
   async putUserDetails(body: { uuid: string; encryptedData: string }) {
     await this.client.post("user-details", { json: body });
   }
+
+  async checkUnlockCode(code: string) {
+    return this.client.get(`codes/validate/${code}`);
+  }
 }
