@@ -69,7 +69,7 @@ const SettingsHome = () => {
       <Grid item xs={6}>
         <Typography>
           Please email{" "}
-          <TextLink href="mailto:baton@dasher.com">baton@dasher.com</TextLink>{" "}
+          <TextLink href="mailto:vertanen@mtu.edu">vertanen@mtu.edu</TextLink>{" "}
           with any questions.
           {settings?.includeUUID
             ? `Your anonymized ID is ${settings?.uuid}.`
