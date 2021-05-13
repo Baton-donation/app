@@ -369,6 +369,13 @@ export const registerIPCHandlers = async (): Promise<void> => {
       }
     }
 
+    if (!apps.find((a) => a.name === "Grid")) {
+      const grid = appFactory({ name: "Grid", path: "" });
+      if (await grid.doesExist()) {
+        possible.push("Grid");
+      }
+    }
+
     return possible;
   });
 
