@@ -7,9 +7,7 @@ import { AAppDataGetters, AppName } from "./types";
 const DASHER_PATHS = [
   path.join(__dirname, "../../../test-data/apps/dasher.txt"),
 ];
-const GRID_PATHS = [
-  path.join(__dirname, "../../../test-data/apps/grid/history.sqlite"),
-];
+const GRID_PATHS = [path.join(__dirname, "../../../test-data/grid.sqlite")];
 
 if (process.env.APPDATA) {
   DASHER_PATHS.push(
