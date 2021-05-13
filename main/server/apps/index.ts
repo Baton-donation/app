@@ -30,7 +30,9 @@ const dasher = new PlainText({
 });
 
 const GRID_PATHS = [path.join(__dirname, "../../../test-data/grid.sqlite")];
-const GRID_ROOTS: Array<string> = [];
+const GRID_ROOTS: Array<string> = [
+  path.join(__dirname, "../../../test-data/Grid 3"),
+];
 
 // Grid 3 is only available on Window so we only
 // look for the paths if we are on a windows machine
