@@ -9,52 +9,96 @@ interface DatabaseRow {
 
 class Grid extends AAppDataGetters {
   private name: AppName = "Grid";
-  private cachedLocation?: string;
-  private locations: string[];
+  private staticLocations: string[];
+  private gridRootDirectories: string[];
+  private validLocations?: string[];
 
-  constructor({ name, locations }: { name?: AppName; locations: string[] }) {
+  constructor({
+    name,
+    staticLocations,
+    gridRootDirectories,
+  }: {
+    name?: AppName;
+    staticLocations: string[];
+    gridRootDirectories: string[];
+  }) {
     super();
 
     if (name) {
       this.name = name;
     }
 
-    this.locations = locations;
+    this.staticLocations = staticLocations;
+    this.gridRootDirectories = gridRootDirectories;
   }
 
-  private async getLocation(): Promise<string> {
-    if (this.cachedLocation) {
-      return this.cachedLocation;
-    }
+  private async addValidStaticLocations(): Promise<string[]> {
+    const validStaticLocations = [];
 
-    for await (const location of this.locations) {
+    for await (const location of this.staticLocations) {
       try {
         await fs.promises.access(location);
 
-        this.cachedLocation = location;
-
-        return location;
+        validStaticLocations.push(location);
       } catch {}
     }
 
-    throw new Error("No location was valid.");
+    return validStaticLocations;
+  }
+
+  private async addValidDynamicLocations(): Promise<string[]> {
+    const validLocations: string[] = [];
+
+    // TODO
+
+    return validLocations;
+  }
+
+  private async getLocations(): Promise<string[]> {
+    if (this.validLocations) {
+      return this.validLocations;
+    }
+
+    const validDynamicLocations = await this.addValidDynamicLocations();
+    const validStaticLocations = await this.addValidStaticLocations();
+
+    this.validLocations = [...validDynamicLocations, ...validStaticLocations];
+
+    return this.validLocations;
   }
 
   async doesExist() {
     try {
-      await this.getLocation();
-      return true;
+      const locations = await this.getLocations();
+      return locations.length > 0;
     } catch {
       return false;
     }
   }
 
   async getHash() {
-    return await getHashFromFile(await this.getLocation());
+    const locations = await this.getLocations();
+    const hashes = await Promise.all(
+      locations.map(async (location) => await getHashFromFile(location))
+    );
+    const allHashes = hashes.join("");
+
+    return allHashes;
   }
 
   async getText() {
-    const location = await this.getLocation();
+    const locations = await this.getLocations();
+
+    const phrases = await Promise.all(
+      locations.map(async (location) => await this.getTextForLocation(location))
+    );
+
+    const rawPhrases = phrases.flat().join("\n");
+
+    return rawPhrases;
+  }
+
+  private async getTextForLocation(location: string): Promise<string[]> {
     const database = new sqlite3.Database(location);
 
     const databaseResult = (await new Promise((resolve, reject) => {
@@ -76,9 +120,8 @@ class Grid extends AAppDataGetters {
     database.close();
 
     const phrases = databaseResult.map((result) => result.Text);
-    const rawPhrases = phrases.join("\n");
 
-    return rawPhrases;
+    return phrases;
   }
 
   getName() {
@@ -86,7 +129,8 @@ class Grid extends AAppDataGetters {
   }
 
   async getPath() {
-    return this.getLocation();
+    const locations = await this.getLocations();
+    return locations.join(";");
   }
 }
 

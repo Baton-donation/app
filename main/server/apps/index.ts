@@ -1,5 +1,6 @@
 import bufferReplace from "buffer-replace";
 import path from "path";
+import os from "os";
 import PlainText from "./plain-text";
 import Grid from "./grid";
 import { AAppDataGetters, AppName } from "./types";
@@ -7,7 +8,6 @@ import { AAppDataGetters, AppName } from "./types";
 const DASHER_PATHS = [
   path.join(__dirname, "../../../test-data/apps/dasher.txt"),
 ];
-const GRID_PATHS = [path.join(__dirname, "../../../test-data/grid.sqlite")];
 
 if (process.env.APPDATA) {
   DASHER_PATHS.push(
@@ -29,9 +29,18 @@ const dasher = new PlainText({
   },
 });
 
+const GRID_PATHS = [path.join(__dirname, "../../../test-data/grid.sqlite")];
+const GRID_ROOTS: Array<string> = [];
+
+// Grid 3 is only available on Window so we only
+// look for the paths if we are on a windows machine
+if (os.platform() === "win32") {
+}
+
 const grid = new Grid({
   name: "Grid",
-  locations: GRID_PATHS,
+  staticLocations: GRID_PATHS,
+  gridRootDirectories: GRID_ROOTS,
 });
 
 export const appFactory = ({
