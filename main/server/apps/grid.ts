@@ -1,5 +1,6 @@
 import fs from "fs";
 import sqlite3 from "sqlite3";
+import path from "path";
 import { getHashFromFile } from "../lib/hash";
 import { AAppDataGetters, AppName } from "./types";
 
@@ -47,11 +48,36 @@ class Grid extends AAppDataGetters {
   }
 
   private async addValidDynamicLocations(): Promise<string[]> {
-    const validLocations: string[] = [];
+    const validDynamicLocations: string[] = [];
 
-    // TODO
+    for await (const currentRoot of this.gridRootDirectories) {
+      try {
+        const userDirectory = path.join(currentRoot, "./Users");
 
-    return validLocations;
+        await fs.promises.access(userDirectory);
+
+        const allFilesInUserDir = await fs.promises.readdir(userDirectory, {
+          withFileTypes: true,
+        });
+        const users = allFilesInUserDir.filter((source) =>
+          source.isDirectory()
+        );
+
+        for await (const currentUser of users) {
+          const userHistory = path.join(
+            userDirectory,
+            currentUser.name,
+            "./en-GB/Phrases/history.sqlite"
+          );
+
+          await fs.promises.access(userHistory);
+
+          validDynamicLocations.push(userHistory);
+        }
+      } catch {}
+    }
+
+    return validDynamicLocations;
   }
 
   private async getLocations(): Promise<string[]> {
