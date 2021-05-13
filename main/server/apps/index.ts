@@ -1,11 +1,14 @@
 import bufferReplace from "buffer-replace";
 import path from "path";
 import PlainText from "./plain-text";
-import SQLlite from "./sqllite";
+import Grid from "./grid";
 import { AAppDataGetters, AppName } from "./types";
 
 const DASHER_PATHS = [
   path.join(__dirname, "../../../test-data/apps/dasher.txt"),
+];
+const GRID_PATHS = [
+  path.join(__dirname, "../../../test-data/apps/grid/history.sqlite"),
 ];
 
 if (process.env.APPDATA) {
@@ -28,18 +31,9 @@ const dasher = new PlainText({
   },
 });
 
-const grid = new SQLlite({
+const grid = new Grid({
   name: "Grid",
-  locations: [],
-  processFile: (buff) => {
-    const cleanedBuffer: Buffer = bufferReplace(
-      buff,
-      Buffer.from("C2A72323", "hex"),
-      "\n"
-    );
-
-    return cleanedBuffer.toString();
-  },
+  locations: GRID_PATHS,
 });
 
 export const appFactory = ({
