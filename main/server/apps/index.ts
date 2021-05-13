@@ -1,6 +1,7 @@
 import bufferReplace from "buffer-replace";
 import path from "path";
 import PlainText from "./plain-text";
+import SQLlite from "./sqllite";
 import { AAppDataGetters, AppName } from "./types";
 
 const DASHER_PATHS = [
@@ -27,6 +28,20 @@ const dasher = new PlainText({
   },
 });
 
+const grid = new SQLlite({
+  name: "Grid",
+  locations: [],
+  processFile: (buff) => {
+    const cleanedBuffer: Buffer = bufferReplace(
+      buff,
+      Buffer.from("C2A72323", "hex"),
+      "\n"
+    );
+
+    return cleanedBuffer.toString();
+  },
+});
+
 export const appFactory = ({
   name,
   path,
@@ -37,9 +52,11 @@ export const appFactory = ({
   switch (name) {
     case "Dasher":
       return dasher;
+    case "Grid":
+      return grid;
     case "Plain Text":
       return new PlainText({ locations: [path] });
   }
 };
 
-export default { dasher };
+export default { dasher, grid };

@@ -18,6 +18,10 @@ const getInstalledApps = async () => {
     installedApps.push(apps.dasher);
   }
 
+  if (await apps.grid.doesExist()) {
+    installedApps.push(apps.grid);
+  }
+
   return installedApps;
 };
 
