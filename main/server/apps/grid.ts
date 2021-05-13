@@ -47,6 +47,22 @@ class Grid extends AAppDataGetters {
     return validStaticLocations;
   }
 
+  /**
+   * Goes through the potential grid roots and looks for sqlite files.
+   * Each Grid 3 root can have any number of users, we return all the users that we find
+   *
+   * A Grid 3 folder has this structure:
+   * /Grid 3
+   *  /Users
+   *    /first
+   *      /en-GB
+   *        /Phrases
+   *          history.sqlite
+   *    /second
+   *      /en-GB
+   *        /Phrases
+   *          history.sqlite
+   */
   private async addValidDynamicLocations(): Promise<string[]> {
     const validDynamicLocations: string[] = [];
 
@@ -102,6 +118,12 @@ class Grid extends AAppDataGetters {
     }
   }
 
+  /**
+   * We get the raw contents of all the files and hash them.
+   *
+   * We combine the hashes so that if any file changes we
+   * re-fetch the text
+   */
   async getHash() {
     const locations = await this.getLocations();
     const hashes = await Promise.all(
@@ -124,6 +146,15 @@ class Grid extends AAppDataGetters {
     return rawPhrases;
   }
 
+  /**
+   * Queries the sqlite database given.
+   *
+   * Selects all the phrases in the PhraseHistory table.
+   *
+   * Only takes phrases with a real timestamp. For some reason
+   * every phrase exists in history once without a timestamp even
+   * when its never been said
+   */
   private async getTextForLocation(location: string): Promise<string[]> {
     const database = new sqlite3.Database(location);
 
@@ -154,6 +185,9 @@ class Grid extends AAppDataGetters {
     return this.name;
   }
 
+  /**
+   * Join all the paths together as there is multiple paths
+   */
   async getPath() {
     const locations = await this.getLocations();
     return locations.join(";");
