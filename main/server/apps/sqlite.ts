@@ -2,7 +2,7 @@ import fs from "fs";
 import { getHashFromFile } from "../lib/hash";
 import { AAppDataGetters, AppName } from "./types";
 
-class SQLlite extends AAppDataGetters {
+class SQLite extends AAppDataGetters {
   private name: AppName = "Plain Text";
   private cachedLocation?: string;
   private locations: string[];
@@ -28,6 +28,8 @@ class SQLlite extends AAppDataGetters {
   }
 
   private async getLocation(): Promise<string> {
+    console.log("getLocation of sqlite");
+
     if (this.cachedLocation) {
       return this.cachedLocation;
     }
@@ -73,4 +75,4 @@ class SQLlite extends AAppDataGetters {
   }
 }
 
-export default SQLlite;
+export default SQLite;
