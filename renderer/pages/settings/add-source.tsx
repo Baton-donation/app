@@ -65,6 +65,14 @@ const AddSource = () => {
         </Select>
       </Grid>
 
+      {selectedSource === "Grid" && (
+        <Grid item xs={12}>
+          <Typography variant="body1" color="error">
+            This will upload phrases from every Grid user on this computer.
+          </Typography>
+        </Grid>
+      )}
+
       {selectedSource === "Plain Text" && (
         <Grid item container xs={12} alignItems="center" spacing={1}>
           <Grid item>
