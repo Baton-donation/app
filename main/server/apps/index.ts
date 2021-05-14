@@ -1,6 +1,7 @@
 import bufferReplace from "buffer-replace";
 import path from "path";
 import os from "os";
+import { app } from "electron";
 import PlainText from "./plain-text";
 import Grid from "./grid";
 import { AAppDataGetters, AppName } from "./types";
@@ -32,12 +33,9 @@ const dasher = new PlainText({
 const GRID_PATHS = [path.join(__dirname, "../../../test-data/grid.sqlite")];
 const GRID_ROOTS: Array<string> = [
   path.join(__dirname, "../../../test-data/Grid 3"),
+  path.join(app.getPath("home"), "../Public/Documents/Smartbox/Grid 3"),
+  path.join(app.getPath("home"), "./Documents/Smartbox/Grid 3"),
 ];
-
-// Grid 3 is only available on Window so we only
-// look for the paths if we are on a windows machine
-if (os.platform() === "win32") {
-}
 
 const grid = new Grid({
   name: "Grid",
