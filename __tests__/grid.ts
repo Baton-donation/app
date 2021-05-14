@@ -15,6 +15,6 @@ test.only("reads data grid data from a grid file", async () => {
 
   // Assert
   expect(phrases).toBe(
-    `hey guys and a bit like this\ni'm sorry that you have any queries\ni'll get the best price you are looking to get\ni'm sorry that this would like a plan`
+    `hey guys and a bit like this.\ni'm sorry that you have any queries.\ni'll get the best price you are looking to get.\ni'm sorry that this would like a plan.`
   );
 });
