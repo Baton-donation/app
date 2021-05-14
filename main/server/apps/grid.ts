@@ -141,7 +141,16 @@ class Grid extends AAppDataGetters {
       locations.map(async (location) => await this.getTextForLocation(location))
     );
 
-    const rawPhrases = phrases.flat().join("\n");
+    // Every phrase needs to end in a full stop
+    const sentences = phrases.flat().map((phrase) => {
+      if (phrase.endsWith(".")) {
+        return phrase;
+      } else {
+        return `${phrase}.`;
+      }
+    });
+
+    const rawPhrases = sentences.join("\n");
 
     return rawPhrases;
   }
