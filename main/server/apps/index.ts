@@ -1,6 +1,5 @@
 import bufferReplace from "buffer-replace";
 import path from "path";
-import os from "os";
 import { app } from "electron";
 import PlainText from "./plain-text";
 import Grid from "./grid";
