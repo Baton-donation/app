@@ -1,7 +1,7 @@
 import fs from "fs";
 import sqlite3 from "sqlite3";
 import path from "path";
-import { getHashFromFile } from "../lib/hash";
+import { getHashFromFile, hashString } from "../lib/hash";
 import { AAppDataGetters, AppName } from "./types";
 
 interface DatabaseRow {
@@ -131,7 +131,7 @@ class Grid extends AAppDataGetters {
     );
     const allHashes = hashes.join("");
 
-    return allHashes;
+    return hashString(allHashes);
   }
 
   async getText() {
