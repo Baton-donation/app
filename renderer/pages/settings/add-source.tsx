@@ -68,7 +68,7 @@ const AddSource = () => {
       {selectedSource === "Grid" && (
         <Grid item xs={12}>
           <Typography variant="body1" color="error">
-            This will upload phrases from every Grid user on this computer.
+            This will add phrases from every Grid user on this computer.
           </Typography>
         </Grid>
       )}
