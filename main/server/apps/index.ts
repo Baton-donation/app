@@ -1,6 +1,8 @@
 import bufferReplace from "buffer-replace";
 import path from "path";
+import { app } from "electron";
 import PlainText from "./plain-text";
+import Grid from "./grid";
 import { AAppDataGetters, AppName } from "./types";
 
 const DASHER_PATHS = [
@@ -27,6 +29,19 @@ const dasher = new PlainText({
   },
 });
 
+const GRID_PATHS = [path.join(__dirname, "../../../test-data/grid.sqlite")];
+const GRID_ROOTS: Array<string> = [
+  path.join(__dirname, "../../../test-data/Grid 3"),
+  path.join(app.getPath("home"), "../Public/Documents/Smartbox/Grid 3"),
+  path.join(app.getPath("home"), "./Documents/Smartbox/Grid 3"),
+];
+
+const grid = new Grid({
+  name: "Grid",
+  staticLocations: GRID_PATHS,
+  gridRootDirectories: GRID_ROOTS,
+});
+
 export const appFactory = ({
   name,
   path,
@@ -37,9 +52,11 @@ export const appFactory = ({
   switch (name) {
     case "Dasher":
       return dasher;
+    case "Grid":
+      return grid;
     case "Plain Text":
       return new PlainText({ locations: [path] });
   }
 };
 
-export default { dasher };
+export default { dasher, grid };

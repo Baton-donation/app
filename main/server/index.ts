@@ -18,6 +18,10 @@ const getInstalledApps = async () => {
     installedApps.push(apps.dasher);
   }
 
+  if (await apps.grid.doesExist()) {
+    installedApps.push(apps.grid);
+  }
+
   return installedApps;
 };
 
@@ -362,6 +366,13 @@ export const registerIPCHandlers = async (): Promise<void> => {
       const dasher = appFactory({ name: "Dasher", path: "" });
       if (await dasher.doesExist()) {
         possible.push("Dasher");
+      }
+    }
+
+    if (!apps.find((a) => a.name === "Grid")) {
+      const grid = appFactory({ name: "Grid", path: "" });
+      if (await grid.doesExist()) {
+        possible.push("Grid");
       }
     }
 
