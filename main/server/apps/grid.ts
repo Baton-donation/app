@@ -86,9 +86,10 @@ class Grid extends AAppDataGetters {
             "./en-GB/Phrases/history.sqlite"
           );
 
-          await fs.promises.access(userHistory);
-
-          validDynamicLocations.push(userHistory);
+          try {
+            await fs.promises.access(userHistory);
+            validDynamicLocations.push(userHistory);
+          } catch {}
         }
       } catch {}
     }
