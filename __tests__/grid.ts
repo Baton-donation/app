@@ -34,8 +34,6 @@ test("Only adds full stops to phrases that don't have any punctuation at the end
   // Act
   const phrases = await gridDataSource.getText();
 
-  console.log(phrases);
-
   // Assert
   expect(phrases).toBe(`i need to buy tickets.
 i would like to go by train.
@@ -48,6 +46,5 @@ i am going to eat food with my  friend for her happy birthday!
 what is your name?
 when is your birthday?
 i am asking a question.
-i feel happy.
-`);
+i feel happy.`);
 });
