@@ -142,9 +142,17 @@ class Grid extends AAppDataGetters {
       locations.map(async (location) => await this.getTextForLocation(location))
     );
 
-    // Every phrase needs to end in a full stop
     const sentences = phrases.flat().map((phrase) => {
-      if (phrase.endsWith(".")) {
+      // We use the constructor for each phrase because regex is stateful
+      // This regex matches all punctuation
+      const isPunctuationRegex = new RegExp(
+        /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/,
+        "g"
+      );
+      const lastCharacter = phrase[phrase.length - 1];
+      const endsInPunctuation = isPunctuationRegex.test(lastCharacter);
+
+      if (endsInPunctuation) {
         return phrase;
       } else {
         return `${phrase}.`;
