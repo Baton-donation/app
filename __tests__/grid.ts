@@ -1,11 +1,12 @@
 import path from "path";
 import Grid from "../main/server/apps/grid";
+import { EPossibleSources } from "../main/server/apps/types";
 
 test("reads data grid data from a grid file", async () => {
   // Arrange
   const pathToTestFile = path.join(__dirname, "./grid-test-data.sqlite");
   const gridDataSource = new Grid({
-    name: "Grid",
+    name: EPossibleSources.Grid,
     staticLocations: [pathToTestFile],
     gridRootDirectories: [],
   });
@@ -26,7 +27,7 @@ test("Only adds full stops to phrases that don't have any punctuation at the end
     "./grid-history-with-full-stops.sqlite"
   );
   const gridDataSource = new Grid({
-    name: "Grid",
+    name: EPossibleSources.Grid,
     staticLocations: [pathToTestFile],
     gridRootDirectories: [],
   });
