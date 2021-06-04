@@ -1,5 +1,5 @@
 import electron from "electron";
-import { ISentence, IStats, ISettings, IApp } from "./types";
+import { EPossibleSources, ISentence, IStats, ISettings, IApp } from "./types";
 
 // Prevent SSR webpacking
 const ipcRenderer = electron.ipcRenderer || false;
@@ -84,7 +84,7 @@ export const deleteSource = async (id: number) => {
   return ipcRenderer.invoke("delete-source", id);
 };
 
-export const getPossibleNewSources = async (): Promise<string[]> => {
+export const getPossibleNewSources = async (): Promise<[EPossibleSources]> => {
   return ipcRenderer.invoke("get-possible-new-sources");
 };
 

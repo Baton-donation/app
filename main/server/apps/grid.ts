@@ -2,14 +2,15 @@ import fs from "fs";
 import sqlite3 from "sqlite3";
 import path from "path";
 import { getHashFromFile, hashString } from "../lib/hash";
-import { AAppDataGetters, AppName } from "./types";
+import { AAppDataGetters, EPossibleSources } from "./types";
+import { addEndMarkerToPhrase } from "../lib/add-end-marker-to-phrase";
 
 interface DatabaseRow {
   Text: string;
 }
 
 class Grid extends AAppDataGetters {
-  private name: AppName = "Grid";
+  private name: EPossibleSources = EPossibleSources.Grid;
   private staticLocations: string[];
   private gridRootDirectories: string[];
   private validLocations?: string[];
@@ -19,7 +20,7 @@ class Grid extends AAppDataGetters {
     staticLocations,
     gridRootDirectories,
   }: {
-    name?: AppName;
+    name?: EPossibleSources;
     staticLocations: string[];
     gridRootDirectories: string[];
   }) {
@@ -142,22 +143,9 @@ class Grid extends AAppDataGetters {
       locations.map(async (location) => await this.getTextForLocation(location))
     );
 
-    const sentences = phrases.flat().map((phrase) => {
-      // We use the constructor for each phrase because regex is stateful
-      // This regex matches all punctuation
-      const isPunctuationRegex = new RegExp(
-        /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/,
-        "g"
-      );
-      const lastCharacter = phrase[phrase.length - 1];
-      const endsInPunctuation = isPunctuationRegex.test(lastCharacter);
-
-      if (endsInPunctuation) {
-        return phrase;
-      } else {
-        return `${phrase}.`;
-      }
-    });
+    const sentences = phrases
+      .flat()
+      .map((phrase) => addEndMarkerToPhrase(phrase));
 
     const rawPhrases = sentences.join("\n");
 
@@ -181,7 +169,7 @@ class Grid extends AAppDataGetters {
         `
         SELECT Text
         FROM PhraseHistory ph
-        INNER JOIN Phrases p ON p.Id = ph.PhraseId 
+        INNER JOIN Phrases p ON p.Id = ph.PhraseId
         WHERE "Timestamp" <> 0
       `,
         (err, result) => {

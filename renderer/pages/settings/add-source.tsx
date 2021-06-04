@@ -7,18 +7,21 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { getPossibleNewSources, addSource } from "../../lib/api";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { EPossibleSources } from "../../lib/types";
 
 const AddSource = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [sources, setSources] = useState<string[]>([]);
-  const [selectedSource, setSelectedSource] = useState("");
+  const [sources, setSources] = useState<EPossibleSources[]>([]);
+  const [selectedSource, setSelectedSource] = useState<EPossibleSources>(
+    EPossibleSources.PlainText
+  );
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     getPossibleNewSources().then((s) => {
       setSources(s);
-      setSelectedSource(s[0] ?? "");
+      setSelectedSource(s[0]);
     });
   }, []);
 
@@ -27,9 +30,9 @@ const AddSource = () => {
   }, [selectedSource]);
 
   const isFormValid = useMemo(() => {
-    if (selectedSource === "Plain Text") {
+    if (selectedSource === EPossibleSources.PlainText) {
       return file !== null && file !== undefined;
-    } else if (selectedSource !== "") {
+    } else if (selectedSource !== null) {
       return true;
     }
 
@@ -55,7 +58,9 @@ const AddSource = () => {
           labelId="per-page-select-label"
           style={{ marginRight: "0.5rem" }}
           value={selectedSource}
-          onChange={(e) => setSelectedSource(e.target.value as string)}
+          onChange={(e) =>
+            setSelectedSource(e.target.value as EPossibleSources)
+          }
         >
           {sources.map((source) => (
             <MenuItem value={source} key={source}>
@@ -65,7 +70,7 @@ const AddSource = () => {
         </Select>
       </Grid>
 
-      {selectedSource === "Grid" && (
+      {selectedSource === EPossibleSources.Grid && (
         <Grid item xs={12}>
           <Typography variant="body1" color="error">
             This will add phrases from every Grid user on this computer.
@@ -73,7 +78,8 @@ const AddSource = () => {
         </Grid>
       )}
 
-      {selectedSource === "Plain Text" && (
+      {(selectedSource === EPossibleSources.PlainText ||
+        selectedSource === EPossibleSources.NewlineSeparatedPlainText) && (
         <Grid item container xs={12} alignItems="center" spacing={1}>
           <Grid item>
             <input

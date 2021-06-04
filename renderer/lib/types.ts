@@ -1,3 +1,6 @@
+// Yes, a lot of this is duplicated.
+// See: https://github.com/vercel/next.js/issues/706
+
 export interface ISentence {
   uuid: string;
   createdAt: number;
@@ -26,4 +29,11 @@ export interface IApp {
   path: string;
   hash: string;
   updatedAt: Date;
+}
+
+export enum EPossibleSources {
+  Dasher = "Dasher",
+  PlainText = "Plain Text",
+  NewlineSeparatedPlainText = "Newline Separated Plain Text",
+  Grid = "Grid",
 }

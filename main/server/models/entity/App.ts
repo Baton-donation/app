@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { EPossibleSources } from "../../apps/types";
 
 @Entity()
 export class App {
@@ -6,7 +7,7 @@ export class App {
   id!: number;
 
   @Column()
-  name!: string;
+  name!: EPossibleSources;
 
   @Column()
   path!: string;

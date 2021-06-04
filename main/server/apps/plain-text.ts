@@ -1,9 +1,9 @@
 import fs from "fs";
 import { getHashFromFile } from "../lib/hash";
-import { AAppDataGetters, AppName } from "./types";
+import { AAppDataGetters, EPossibleSources } from "./types";
 
 class PlainText extends AAppDataGetters {
-  private name: AppName = "Plain Text";
+  private name: EPossibleSources = EPossibleSources.PlainText;
   private cachedLocation?: string;
   private locations: string[];
   private processFileFunc: (buff: Buffer) => string;
@@ -13,7 +13,7 @@ class PlainText extends AAppDataGetters {
     locations,
     processFile = (t) => t.toString(),
   }: {
-    name?: AppName;
+    name?: EPossibleSources;
     locations: string[];
     processFile?: (buff: Buffer) => string;
   }) {

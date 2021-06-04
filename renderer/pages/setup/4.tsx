@@ -8,12 +8,12 @@ import { getInstalledApps, importFromInstalledApps } from "../../lib/api";
 
 const buildCommaSeperatedString = (values: string[]) =>
   values.reduce((accum, value, i) => {
-    if (values.length === 1) {
+    if (values.length === 1 || i === 0) {
       return value;
     }
 
     if (i === values.length - 1) {
-      return `${accum}, and ${value}`;
+      return `${accum} and ${value}`;
     }
 
     return `${accum}, ${value}`;

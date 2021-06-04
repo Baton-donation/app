@@ -4,7 +4,7 @@ import chunk from "chunk";
 import { getDBConnection, deleteDB, Settings, Sentence, App } from "./models";
 import apps, { appFactory } from "./apps";
 import { getSentences } from "./lib/nlp";
-import { AppName } from "./apps/types";
+import { EPossibleSources } from "./apps/types";
 import { Connection, In } from "typeorm";
 import sodium from "libsodium-wrappers";
 import APIClient, { ISentenceDto } from "./lib/api";
@@ -42,10 +42,7 @@ const refreshDataFromAllApps = async (
     installedApps
       .filter((a) => (appFilter.length > 0 ? appFilter.includes(a.id) : true))
       .map(async (appModel) => {
-        const thisApp = appFactory({
-          name: appModel.name as AppName,
-          path: appModel.path,
-        });
+        const thisApp = appFactory(appModel);
 
         const currentHash = await thisApp.getHash();
 
@@ -328,7 +325,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
 
   ipcMain.handle(
     "add-source",
-    async (_, { name, path }: { name: AppName; path: string }) => {
+    async (_, { name, path }: { name: EPossibleSources; path: string }) => {
       const app = appFactory({ name, path });
 
       const newApp = appRepo.create({
@@ -358,21 +355,24 @@ export const registerIPCHandlers = async (): Promise<void> => {
   });
 
   ipcMain.handle("get-possible-new-sources", async () => {
-    const possible: AppName[] = ["Plain Text"];
+    const possible: EPossibleSources[] = [
+      EPossibleSources.PlainText,
+      EPossibleSources.NewlineSeparatedPlainText,
+    ];
 
     const apps = await appRepo.find();
 
     if (!apps.find((a) => a.name === "Dasher")) {
-      const dasher = appFactory({ name: "Dasher", path: "" });
+      const dasher = appFactory({ name: EPossibleSources.Dasher, path: "" });
       if (await dasher.doesExist()) {
-        possible.push("Dasher");
+        possible.push(EPossibleSources.Dasher);
       }
     }
 
     if (!apps.find((a) => a.name === "Grid")) {
-      const grid = appFactory({ name: "Grid", path: "" });
+      const grid = appFactory({ name: EPossibleSources.Grid, path: "" });
       if (await grid.doesExist()) {
-        possible.push("Grid");
+        possible.push(EPossibleSources.Grid);
       }
     }
 
