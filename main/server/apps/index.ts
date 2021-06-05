@@ -64,7 +64,7 @@ export const appFactory = ({
           return buff
             .toString()
             .split("\n")
-            .map((phrase) => addEndMarkerToPhrase(phrase))
+            .map((phrase) => addEndMarkerToPhrase(phrase.trim()))
             .join(" ")
             .replace(/\.\./g, ".");
         },
