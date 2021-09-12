@@ -271,19 +271,16 @@ export const registerIPCHandlers = async (): Promise<void> => {
   );
 
   ipcMain.handle("get-stats", async () => {
-    const [
-      totalSentences,
-      submittedSentences,
-      unviewedSentences,
-    ] = await Promise.all([
-      sentencesRepo.count(),
-      sentencesRepo.count({
-        where: { submitted: true },
-      }),
-      sentencesRepo.count({
-        where: { viewed: false },
-      }),
-    ]);
+    const [totalSentences, submittedSentences, unviewedSentences] =
+      await Promise.all([
+        sentencesRepo.count(),
+        sentencesRepo.count({
+          where: { submitted: true },
+        }),
+        sentencesRepo.count({
+          where: { viewed: false },
+        }),
+      ]);
 
     return { totalSentences, submittedSentences, unviewedSentences };
   });
@@ -358,6 +355,7 @@ export const registerIPCHandlers = async (): Promise<void> => {
     const possible: EPossibleSources[] = [
       EPossibleSources.PlainText,
       EPossibleSources.NewlineSeparatedPlainText,
+      EPossibleSources.Communicator,
     ];
 
     const apps = await appRepo.find();

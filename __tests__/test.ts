@@ -22,7 +22,7 @@ beforeAll(async () => {
   await dasher.build({ size: "1mb" });
 
   app = new Application({
-    path: (electronPath as unknown) as string,
+    path: electronPath as unknown as string,
     args: [path.join(__dirname, "../")],
     env: {
       DB_PATH,

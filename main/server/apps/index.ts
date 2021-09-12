@@ -3,6 +3,7 @@ import path from "path";
 import { app } from "electron";
 import PlainText from "./plain-text";
 import Grid from "./grid";
+import Communicator from "./communicator";
 import { AAppDataGetters, EPossibleSources } from "./types";
 import { addEndMarkerToPhrase } from "../lib/add-end-marker-to-phrase";
 
@@ -69,6 +70,8 @@ export const appFactory = ({
             .replace(/\.\./g, ".");
         },
       });
+    case EPossibleSources.Communicator:
+      return new Communicator({ location: path });
   }
 
   throw new Error(`${name} not implemented`);

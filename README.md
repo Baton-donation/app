@@ -4,13 +4,21 @@
 
 Baton is a simple app that allows AAC software users to upload data for research purposes.
 
-Currently, Baton supports extracting data from Dasher and plain text files. We plan to add additional supported apps in the future.
+Currently, Baton supports extracting data from:
+- Dasher
+- Grid 3
+- Plain text files
+- Tobii Communicator
+
+We plan to add additional supported apps in the future.
 
 ## Usage
 
 Download and install [a recent release](https://github.com/kdv123/AACDonation/releases). There's a short setup wizard upon the first open.
 
 ## Development
+
+First, copy `.env.example` to `.env` and modify as necessary. Then:
 
 ```bash
 # install dependencies

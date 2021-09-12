@@ -23,9 +23,8 @@ import {
 const SettingsHome = () => {
   const router = useRouter();
   const [settings, setSettings] = useState<ISettings | null>(null);
-  const [showDeletionConfirmation, setShowDeletionConfirmation] = useState(
-    false
-  );
+  const [showDeletionConfirmation, setShowDeletionConfirmation] =
+    useState(false);
   const [loading, setLoading] = useState(false);
 
   const refreshSettings = () => getSettings().then((s) => setSettings(s));

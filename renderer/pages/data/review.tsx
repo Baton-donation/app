@@ -122,9 +122,12 @@ const ReviewData = () => {
         await refreshSentences();
 
       setError("");
-    } catch (error) {
-      console.log(error);
-      setError(`An error occured. Please try again later. (${error.message})`);
+    } catch (error: unknown) {
+      setError(
+        `An error occured. Please try again later. (${
+          (error as Error).message
+        })`
+      );
     } finally {
       setIsLoading(false);
     }
