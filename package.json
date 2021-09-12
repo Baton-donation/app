@@ -2,7 +2,7 @@
   "private": true,
   "name": "baton",
   "description": "AAC data-gathering app",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "author": "Max Isom <hi@maxisom.me>",
   "main": "app/background.js",
   "scripts": {
@@ -54,6 +54,7 @@
     "@babel/preset-typescript": "^7.15.0",
     "@material-ui/core": "^4.12.3",
     "@types/chunk": "^0.0.0",
+    "@types/jest": "^27.0.1",
     "@types/libsodium-wrappers": "^0.7.9",
     "@types/node": "^16.9.1",
     "@types/react": "^17.0.20",

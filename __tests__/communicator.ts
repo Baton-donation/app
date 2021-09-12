@@ -11,6 +11,6 @@ test("reads Communicator phrase file", async () => {
   const phrases = await communicator.getText();
 
   expect(phrases).toBe(
-    "Hello how are you I think it's over cooked.\nHello how are you\nHello\nHello, my name is this low carb?\nHi, this is delicious!"
+    "Hello how are you I think it's over cooked.\nHello how are you.\nHello.\nHello, my name is this low carb?\nHi, this is delicious!"
   );
 });

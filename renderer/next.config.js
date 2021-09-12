@@ -1,6 +1,7 @@
 module.exports = {
-  webpack: (config) =>
-    Object.assign(config, {
-      target: "electron-renderer",
-    }),
+  webpack: (config) => {
+    config.target = "electron-renderer";
+
+    return config;
+  },
 };
