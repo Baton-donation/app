@@ -4,7 +4,7 @@ import { app } from "electron";
 import PlainText from "./plain-text";
 import Grid from "./grid";
 import Communicator from "./communicator";
-import { AAppDataGetters, EPossibleSources } from "./types";
+import { AAppDataGetters, EPossibleSources, PredictableHistory } from "./types";
 import { addEndMarkerToPhrase } from "../lib/add-end-marker-to-phrase";
 
 const DASHER_PATHS = [
@@ -72,6 +72,19 @@ export const appFactory = ({
       });
     case EPossibleSources.Communicator:
       return new Communicator({ location: path });
+    case EPossibleSources.Predictable:
+      return new PlainText({
+        locations: [path],
+        processFile: (buff) => {
+          const parsedBuffer: PredictableHistory = JSON.parse(buff.toString());
+
+          return parsedBuffer.RecordedMessages.map((message) =>
+            addEndMarkerToPhrase(message.Transcription.Text.trim())
+          )
+            .join(" ")
+            .replace(/\.\./g, ".");
+        },
+      });
   }
 
   throw new Error(`${name} not implemented`);
