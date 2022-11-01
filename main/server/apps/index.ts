@@ -4,8 +4,9 @@ import { app } from "electron";
 import PlainText from "./plain-text";
 import Grid from "./grid";
 import Communicator from "./communicator";
-import { AAppDataGetters, EPossibleSources, PredictableHistory } from "./types";
+import { AAppDataGetters, EPossibleSources } from "./types";
 import { addEndMarkerToPhrase } from "../lib/add-end-marker-to-phrase";
+import { processPredictableFile } from "./predictable";
 
 const DASHER_PATHS = [
   path.join(__dirname, "../../../test-data/apps/dasher.txt"),
@@ -75,15 +76,7 @@ export const appFactory = ({
     case EPossibleSources.Predictable:
       return new PlainText({
         locations: [path],
-        processFile: (buff) => {
-          const parsedBuffer: PredictableHistory = JSON.parse(buff.toString());
-
-          return parsedBuffer.RecordedMessages.map((message) =>
-            addEndMarkerToPhrase(message.Transcription.Text.trim())
-          )
-            .join(" ")
-            .replace(/\.\./g, ".");
-        },
+        processFile: processPredictableFile,
       });
   }
 
