@@ -37,4 +37,5 @@ export enum EPossibleSources {
   NewlineSeparatedPlainText = "Newline Separated Plain Text",
   Grid = "Grid",
   Communicator = "Tobii Communicator",
+  Predictable = "Predictable",
 }

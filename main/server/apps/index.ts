@@ -6,6 +6,7 @@ import Grid from "./grid";
 import Communicator from "./communicator";
 import { AAppDataGetters, EPossibleSources } from "./types";
 import { addEndMarkerToPhrase } from "../lib/add-end-marker-to-phrase";
+import { processPredictableFile } from "./predictable";
 
 const DASHER_PATHS = [
   path.join(__dirname, "../../../test-data/apps/dasher.txt"),
@@ -72,6 +73,11 @@ export const appFactory = ({
       });
     case EPossibleSources.Communicator:
       return new Communicator({ location: path });
+    case EPossibleSources.Predictable:
+      return new PlainText({
+        locations: [path],
+        processFile: processPredictableFile,
+      });
   }
 
   throw new Error(`${name} not implemented`);

@@ -4,6 +4,7 @@ export enum EPossibleSources {
   NewlineSeparatedPlainText = "Newline Separated Plain Text",
   Grid = "Grid",
   Communicator = "Tobii Communicator",
+  Predictable = "Predictable",
 }
 export abstract class AAppDataGetters {
   abstract doesExist(): Promise<boolean>;
@@ -12,3 +13,14 @@ export abstract class AAppDataGetters {
   abstract getName(): EPossibleSources;
   abstract getPath(): Promise<string>;
 }
+
+type PredictableRecordedMessage = {
+  FileName: string;
+  Transcription: {
+    Text: string;
+  };
+};
+
+export type PredictableHistory = {
+  RecordedMessages: Array<PredictableRecordedMessage>;
+};

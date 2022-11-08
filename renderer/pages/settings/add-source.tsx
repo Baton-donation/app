@@ -82,11 +82,18 @@ const AddSource = () => {
         EPossibleSources.PlainText,
         EPossibleSources.NewlineSeparatedPlainText,
         EPossibleSources.Communicator,
+        EPossibleSources.Predictable,
       ].includes(selectedSource) && (
         <Grid item container xs={12} alignItems="center" spacing={1}>
           <Grid item>
             <input
-              accept={EPossibleSources.Communicator ? ".phr" : "text/plain"}
+              accept={
+                EPossibleSources.Communicator === selectedSource
+                  ? ".phr"
+                  : EPossibleSources.Predictable === selectedSource
+                  ? ".json"
+                  : "text/plain"
+              }
               type="file"
               style={{ display: "none" }}
               id="file-select"
