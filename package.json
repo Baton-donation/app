@@ -12,7 +12,7 @@
     "server:build": "tsc",
     "dev": "BABEL_ENV=dev concurrently 'yarn server:watch' 'electron . 3000'",
     "build": "del app && yarn next:build && yarn next:export && yarn server:build",
-    "package": "electron-builder",
+    "package": "electron-builder --publish=always",
     "start": "NODE_ENV=production electron .",
     "test": "jest",
     "test:coverage": "nyc jest && nyc report -r lcov",
